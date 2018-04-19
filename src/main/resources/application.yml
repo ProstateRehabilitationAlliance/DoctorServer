@@ -1,0 +1,28 @@
+server:
+  port: 8801
+spring:
+  profiles:
+    active: dev
+  application:
+    name: doctor-server
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/pra
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  cloud:
+    discovery:
+      enabled: true
+      serviceId: eureka-server
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone:  http://192.168.0.222:8888/eureka/
+
+
+
+# mybatis
+mybatis:
+  mapper-locations:  classpath:mapping/*/*.xml
+  type-aliases-package: com.prostate.*.entity
