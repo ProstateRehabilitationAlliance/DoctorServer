@@ -20,13 +20,14 @@ public class DoctorServiceImpl implements DoctorService{
 
     @Autowired
     private DoctorMapper doctorMapper;
+
+
     /**
     *    @Author: feng
     *    @Description: 医生的注册信息dadd
     *    @Date:  13:47  2018/4/19
     *    @Params:   * @param null
     */
-
     @Override
     public int insertSelective(Doctor doctor) {
 
@@ -59,7 +60,13 @@ public class DoctorServiceImpl implements DoctorService{
         List<Doctor> list= doctorMapper.selectByPhone(phone);
         return list;
     }
+          /**
+              *    @Description:   数据更新
+              *    @Date:  18:35  2018/4/19
+              *    @Params:   * @param null
+              */
 
+      
     @Override
     public int updDoctorPassword(Doctor doctor) {
 

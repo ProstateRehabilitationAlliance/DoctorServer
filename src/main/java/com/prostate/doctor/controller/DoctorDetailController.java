@@ -31,9 +31,18 @@ public class DoctorDetailController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "doctor/add",method = RequestMethod.GET)
+    @RequestMapping(value = "doctordetail/add",method = RequestMethod.POST)
     public Map addDoctorInfo(DoctorDetail doctorDetail){
-        //
+        //保证表中个人信息唯一性
+        List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctorDetail.getDoctorId());
+        if (list.size()==1){
+            DoctorDetail doctorDetail01=list.get(0);
+            resultMap.put("status",400);
+            resultMap.put("msg","数据已经存在");
+            resultMap.put("data",doctorDetail);
+            return resultMap;
+        }
+
         int result=doctorDetailService.insertSelective(doctorDetail);
         if(result>0){
             resultMap.put("state","200");
@@ -52,15 +61,15 @@ public class DoctorDetailController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "doctor/upd",method = RequestMethod.GET)
+    @RequestMapping(value = "doctordetail/upd",method = RequestMethod.POST)
     public Map updDoctorInfo(DoctorDetail doctorDetail){
         int result=doctorDetailService.updateSelective(doctorDetail);
         if(result>0){
             resultMap.put("state","200");
-            resultMap.put("message","注册成功");
+            resultMap.put("message","医生详情更新成功");
         }else{
             resultMap.put("state","500");
-            resultMap.put("message","注册失败");
+            resultMap.put("message","医生详情更新失败");
         }
 
         return resultMap;
@@ -74,12 +83,12 @@ public class DoctorDetailController extends BaseController{
 
 /**
 *    @Author: feng
-*    @Description:医生个人信息查询
+*    @Description: 医生个人信息查询
 *    @Date:  15:12  2018/4/19
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "doctor/select/{doctorId}",method = RequestMethod.GET)
+    @RequestMapping(value = "doctordetail/select/{doctorId}",method = RequestMethod.GET)
     public Map findDoctorInfo(@PathVariable String doctorId){
        List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctorId);
         if (list==null){
@@ -94,7 +103,9 @@ public class DoctorDetailController extends BaseController{
             resultMap.put("data",doctorDetail);
 
         }else{
-
+            resultMap.put("status",500);
+            resultMap.put("msg","数据获取不只一条");
+            resultMap.put("data",null);
         }
 
         return resultMap;

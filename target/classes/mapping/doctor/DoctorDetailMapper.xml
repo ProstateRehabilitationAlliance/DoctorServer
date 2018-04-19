@@ -35,7 +35,7 @@
   from pra_doctor_detail
   where id = #{id,jdbcType=VARCHAR}
 </select>
-
+<!---->
   <select id="selectByDoctorId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -46,8 +46,11 @@
     delete from pra_doctor_detail
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-
+  <!--医生详情表插入一条数据-->
   <insert id="insertSelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
+    <selectKey keyProperty="id" resultType="string" order="BEFORE">
+      select replace(uuid(), '-', '') as id from dual
+    </selectKey>
     insert into pra_doctor_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -174,6 +177,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
     update pra_doctor_detail
     <set>

@@ -106,7 +106,7 @@ public class DoctorController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "doctor/login/{doctorPhone}/{doctorPassword}/{newPassword}",method = RequestMethod.GET)
+    @RequestMapping(value = "doctor//{doctorPhone}/{doctorPassword}/{newPassword}",method = RequestMethod.GET)
     public Map updDoctorPassword(@PathVariable  String doctorPhone,@PathVariable String doctorPassword
                     ,@PathVariable String newPassword){
         List<Doctor> list=doctorService.selectByPhone(doctorPhone);

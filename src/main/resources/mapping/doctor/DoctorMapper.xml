@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.prostate.doctor.mapper.DoctorMapper">
+  <!--表和实体类对应的关系-->
   <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.Doctor">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="doctor_phone" jdbcType="VARCHAR" property="doctorPhone" />
@@ -15,7 +16,7 @@
     id, doctor_phone, doctor_password, salt, create_time, create_ip, last_login_time, 
     last_login_ip
   </sql>
-  <!---->
+  <!--通过主键进行查询-->
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -29,20 +30,13 @@
     from pra_doctor
     where doctor_phone = #{doctorPhone,jdbcType=VARCHAR}
   </select>
-
+<!--通过主键进行删除-->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pra_doctor
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
-  <insert id="insert" parameterType="com.prostate.doctor.entity.Doctor">
-    insert into pra_doctor (id, doctor_phone, doctor_password, 
-      salt, create_time, create_ip, 
-      last_login_time, last_login_ip)
-    values (#{id,jdbcType=VARCHAR}, #{doctorPhone,jdbcType=VARCHAR}, #{doctorPassword,jdbcType=VARCHAR}, 
-      #{salt,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{createIp,jdbcType=VARCHAR}, 
-      #{lastLoginTime,jdbcType=TIMESTAMP}, #{lastLoginIp,jdbcType=VARCHAR})
-  </insert>
+
   <!--插入一条医生的数据,主键通过uuid生成-->
   <insert id="insertSelective" parameterType="com.prostate.doctor.entity.Doctor">
     <selectKey keyProperty="id" resultType="string" order="BEFORE">
@@ -102,6 +96,7 @@
       </if>
     </trim>
   </insert>
+  <!--更新医生的信息-->
   <update id="updateByPrimaryKeySelective" parameterType="com.prostate.doctor.entity.Doctor">
     update pra_doctor
     <set>
@@ -129,6 +124,7 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <!--更新医生的密码-->
   <update id="updDoctorPassword" parameterType="com.prostate.doctor.entity.Doctor">
     update pra_doctor
     <set>
@@ -157,15 +153,5 @@
     where id = #{id,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateByPrimaryKey" parameterType="com.prostate.doctor.entity.Doctor">
-    update pra_doctor
-    set doctor_phone = #{doctorPhone,jdbcType=VARCHAR},
-      doctor_password = #{doctorPassword,jdbcType=VARCHAR},
-      salt = #{salt,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_ip = #{createIp,jdbcType=VARCHAR},
-      last_login_time = #{lastLoginTime,jdbcType=TIMESTAMP},
-      last_login_ip = #{lastLoginIp,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
+
 </mapper>

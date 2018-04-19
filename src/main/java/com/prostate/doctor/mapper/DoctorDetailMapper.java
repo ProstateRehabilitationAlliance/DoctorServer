@@ -20,5 +20,5 @@ public interface DoctorDetailMapper {
     int updateByPrimaryKey(DoctorDetail record);
 
 
-    List<DoctorDetail> selectByDoctorId();
+    List<DoctorDetail> selectByDoctorId(String doctorId);
 }

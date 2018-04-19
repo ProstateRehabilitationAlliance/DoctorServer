@@ -35,19 +35,24 @@
   from pra_doctor_detail
   where id = #{id,jdbcType=VARCHAR}
 </select>
-
+<!--通过医生的id查询医生的详情信息-->
   <select id="selectByDoctorId" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from pra_doctor_detail
     where doctor_id = #{doctorId,jdbcType=VARCHAR}
   </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from pra_doctor_detail
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-
+  <!--医生详情表插入一条数据-->
   <insert id="insertSelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
+    <selectKey keyProperty="id" resultType="string" order="BEFORE">
+      select replace(uuid(), '-', '') as id from dual
+    </selectKey>
     insert into pra_doctor_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -174,6 +179,7 @@
       </if>
     </trim>
   </insert>
+  <!--医生详情表更新一条数据-->
   <update id="updateByPrimaryKeySelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
     update pra_doctor_detail
     <set>
@@ -237,27 +243,5 @@
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.prostate.doctor.entity.DoctorDetail">
-    update pra_doctor_detail
-    set doctor_id = #{doctorId,jdbcType=VARCHAR},
-      doctor_photo_path = #{doctorPhotoPath,jdbcType=VARCHAR},
-      doctor_name = #{doctorName,jdbcType=VARCHAR},
-      doctor_sex = #{doctorSex,jdbcType=CHAR},
-      hospital_dept_id = #{hospitalDeptId,jdbcType=VARCHAR},
-      doctor_type = #{doctorType,jdbcType=VARCHAR},
-      doctor_idcard = #{doctorIdcard,jdbcType=VARCHAR},
-      doctor_introduce_oneself = #{doctorIntroduceOneself,jdbcType=VARCHAR},
-      doctor_honour = #{doctorHonour,jdbcType=VARCHAR},
-      doctor_practicing_experience = #{doctorPracticingExperience,jdbcType=VARCHAR},
-      doctor_education = #{doctorEducation,jdbcType=VARCHAR},
-      doctor_diploma = #{doctorDiploma,jdbcType=VARCHAR},
-      doctor_specialty = #{doctorSpecialty,jdbcType=VARCHAR},
-      doctor_school = #{doctorSchool,jdbcType=VARCHAR},
-      doctor_consultation_fee = #{doctorConsultationFee,jdbcType=VARCHAR},
-      doctor_title_id = #{doctorTitleId,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      ios_device_token = #{iosDeviceToken,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
+
 </mapper>
