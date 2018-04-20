@@ -20,6 +20,7 @@ import java.util.Random;
  */
 @Slf4j
 @RestController
+@RequestMapping("/doctor")
 public class DoctorController extends BaseController{
 
     @Autowired
@@ -31,23 +32,23 @@ public class DoctorController extends BaseController{
          *    @Params:   * @param null
          */
 
-    @RequestMapping(value = "/doctor/check",method = RequestMethod.POST)
+    @RequestMapping(value = "/check",method = RequestMethod.POST)
      public Map checkDoctor(@RequestParam("param") String param,@RequestParam("type") Integer type){
         log.info("检查数据接口"+new Date());
         //1.判断手机号是否可用
         if (type == 1) {
             List<Doctor> list = doctorService.selectByPhone(param);
             if (list==null||list.size()==0){
-                resultMap.put("status",200);
+                resultMap.put("status",20000);
                 resultMap.put("msg","OK,数据可用");
-                resultMap.put("data",false);
+                resultMap.put("data",true);
             }else {
-                resultMap.put("status",400);
+                resultMap.put("status",20001);
                 resultMap.put("msg","数据不可用");
                 resultMap.put("data",false);
             }
         }else{
-            resultMap.put("status",400);
+            resultMap.put("status",20002);
             resultMap.put("msg","该数据暂时没有");
             resultMap.put("data",false);
         }
@@ -62,7 +63,7 @@ public class DoctorController extends BaseController{
     *    @Params:   * @param null
     */
     
-    @RequestMapping(value = "/doctor/register",method = RequestMethod.POST)
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
     public Map registerDoctor(Doctor doctor){
         if(doctor!=null){
             //生成盐
@@ -90,23 +91,23 @@ public class DoctorController extends BaseController{
                 int result=doctorService.insertSelective(doctor);
                 if(result>0){
                     log.info(doctor.getDoctorPhone()+"手机号成功"+new Date());
-                    resultMap.put("status",200);
+                    resultMap.put("status",20000);
                     resultMap.put("msg","注册成功");
                     resultMap.put("data",false);
                 }else{
-                    resultMap.put("status",500);
+                    resultMap.put("status",20005);
                     resultMap.put("msg","数据写入失败");
                     resultMap.put("data",false);
                 }
             }else if (list.size()==1){
                 log.debug(doctor.getDoctorPhone()+doctor.getDoctorPassword());
-                resultMap.put("status",400);
+                resultMap.put("status",20001);
                 resultMap.put("msg","注册失败,用户数据已经存在");
                 resultMap.put("data",false);
             }
 
         }else {
-            resultMap.put("status",400);
+            resultMap.put("status",20003);
             resultMap.put("msg","传过来的数据为空");
             resultMap.put("data",false);
         }
@@ -122,22 +123,22 @@ public class DoctorController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "/doctor/login",method = RequestMethod.POST)
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Map loginDoctor(String doctorPhone,String doctorPassword){
         List<Doctor> list=doctorService.selectByPhone(doctorPhone);
         if (list==null){
-            resultMap.put("status",500);
+            resultMap.put("status",20005);
             resultMap.put("msg","没有数据");
             resultMap.put("data",null);
         }else if (list.size()==1){
             String salt=list.get(0).getSalt();
             if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword+salt).getBytes()))){
                 log.info(doctorPhone+"手机号登陆成功"+new Date());
-                resultMap.put("status",200);
+                resultMap.put("status",20000);
                 resultMap.put("msg","数据获取成功");
                 resultMap.put("data",list.get(0));
             }else {
-                resultMap.put("status",400);
+                resultMap.put("status",20004);
                 resultMap.put("msg","密码不正确");
                 resultMap.put("data",null);
             }
@@ -152,12 +153,12 @@ public class DoctorController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "/doctor/updDoctorPassword",method = RequestMethod.POST)
+    @RequestMapping(value = "/updDoctorPassword",method = RequestMethod.POST)
     public Map updDoctorPassword(String doctorPhone,String doctorPassword
                     ,@RequestParam("newPassword") String newPassword){
         List<Doctor> list=doctorService.selectByPhone(doctorPhone);
         if (list==null){
-            resultMap.put("status",500);
+            resultMap.put("status",20005);
             resultMap.put("msg","没有数据");
             resultMap.put("data",null);
         }else if (list.size()==1){
@@ -169,11 +170,11 @@ public class DoctorController extends BaseController{
                 doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword+list.get(0).getSalt()).getBytes()));
                 doctorService.updDoctorPassword(doctor);
 
-                resultMap.put("status",200);
+                resultMap.put("status",20000);
                 resultMap.put("msg","密码修改成功");
                 resultMap.put("data",null);
             }else {
-                resultMap.put("status",400);
+                resultMap.put("status",20004);
                 resultMap.put("msg","密码不正确");
                 resultMap.put("data",null);
             }
