@@ -33,6 +33,7 @@ public class DoctorController extends BaseController{
 
     @RequestMapping(value = "/doctor/check",method = RequestMethod.POST)
      public Map checkDoctor(@RequestParam("param") String param,@RequestParam("type") Integer type){
+        log.info("检查数据接口"+new Date());
         //1.判断手机号是否可用
         if (type == 1) {
             List<Doctor> list = doctorService.selectByPhone(param);
@@ -88,7 +89,7 @@ public class DoctorController extends BaseController{
             if(list==null|list.size()==0){
                 int result=doctorService.insertSelective(doctor);
                 if(result>0){
-                    log.debug(doctor.getDoctorPhone()+doctor.getDoctorPassword());
+                    log.info(doctor.getDoctorPhone()+"手机号成功"+new Date());
                     resultMap.put("status",200);
                     resultMap.put("msg","注册成功");
                     resultMap.put("data",false);
@@ -131,6 +132,7 @@ public class DoctorController extends BaseController{
         }else if (list.size()==1){
             String salt=list.get(0).getSalt();
             if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword+salt).getBytes()))){
+                log.info(doctorPhone+"手机号登陆成功"+new Date());
                 resultMap.put("status",200);
                 resultMap.put("msg","数据获取成功");
                 resultMap.put("data",list.get(0));
@@ -162,10 +164,11 @@ public class DoctorController extends BaseController{
             String salt=list.get(0).getSalt();
             if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword+salt).getBytes()))){
                 Doctor doctor=list.get(0);
-
+                log.info(doctorPhone+"手机号密码修改成功"+new Date());
                 System.out.println("===>"+newPassword);
                 doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword+list.get(0).getSalt()).getBytes()));
                 doctorService.updDoctorPassword(doctor);
+
                 resultMap.put("status",200);
                 resultMap.put("msg","密码修改成功");
                 resultMap.put("data",null);

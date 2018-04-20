@@ -241,7 +241,7 @@
         ios_device_token = #{iosDeviceToken,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=VARCHAR}
+    where doctor_id = #{doctorId,jdbcType=VARCHAR}
   </update>
 
 </mapper>

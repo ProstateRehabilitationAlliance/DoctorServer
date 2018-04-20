@@ -2,12 +2,11 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.entity.DoctorDetail;
 import com.prostate.doctor.service.DoctorDetailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +16,7 @@ import java.util.Map;
  * @Date: Created in 11:33 2018/4/19
  * @Modified By:
  */
+@Slf4j
 @RestController
 public class DoctorDetailController extends BaseController{
     @Autowired
@@ -46,6 +46,7 @@ public class DoctorDetailController extends BaseController{
 
         int result=doctorDetailService.insertSelective(doctorDetail);
         if(result>0){
+            log.info(doctorDetail.getDoctorName()+"医生个人信息添加成功"+new Date());
             resultMap.put("status",200);
             resultMap.put("msg","注册成功");
             resultMap.put("data",false);
@@ -69,6 +70,7 @@ public class DoctorDetailController extends BaseController{
         int result=doctorDetailService.updateSelective(doctorDetail);
         if(result>0){
             resultMap.put("status",200);
+            log.info(doctorDetail.getDoctorName()+"医生个人信息修改成功"+new Date());
             resultMap.put("msg","医生详情更新成功");
             resultMap.put("data",false);
         }else{
@@ -93,16 +95,17 @@ public class DoctorDetailController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "/doctordetail/select/{doctorId}",method = RequestMethod.GET)
-    public Map findDoctorInfo(@PathVariable String doctorId){
+    @RequestMapping(value = "/doctordetail/select",method = RequestMethod.GET)
+    public Map findDoctorInfo(@RequestParam("doctorId") String doctorId){
        List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctorId);
         if (list==null){
-            resultMap.put("status",500);
+            resultMap.put("status",400);
             resultMap.put("msg","没有数据");
             resultMap.put("data",null);
 
         }else if(list.size()==1){
             DoctorDetail doctorDetail=list.get(0);
+            log.info(doctorDetail.getDoctorName()+"医生个人信息查询成功"+new Date());
             resultMap.put("status",200);
             resultMap.put("msg","数据获取成功");
             resultMap.put("data",doctorDetail);
