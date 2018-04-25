@@ -1,5 +1,7 @@
 package com.prostate.doctor.controller;
 
+import com.prostate.doctor.cache.redis.RedisSerive;
+import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorDetail;
 import com.prostate.doctor.service.DoctorDetailService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class DoctorDetailController extends BaseController{
     @Autowired
     private DoctorDetailService doctorDetailService;
 
+    @Autowired
+    private RedisSerive redisSerive;
 
 
 /**
@@ -33,28 +37,26 @@ public class DoctorDetailController extends BaseController{
 */
 
     @RequestMapping(value = "/add",method = RequestMethod.POST)
-    public Map addDoctorInfo(DoctorDetail doctorDetail){
+    public Map addDoctorInfo(DoctorDetail doctorDetail,String token){
         //保证表中个人信息唯一性
-        List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctorDetail.getDoctorId());
+        Doctor doctor = redisSerive.getDoctor(token);
+        List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctor.getId());
         if (list.size()==1){
-            DoctorDetail doctorDetail01=list.get(0);
-
-            resultMap.put("status",20001);
-            resultMap.put("msg","数据已经存在");
-            resultMap.put("data",false);
+            resultMap.put("code",20001);
+            resultMap.put("msg","个人信息添加失败");
+            resultMap.put("result",false);
             return resultMap;
         }
-
+        doctorDetail.setDoctorId(doctor.getId());
         int result=doctorDetailService.insertSelective(doctorDetail);
         if(result>0){
-            log.info(doctorDetail.getDoctorName()+"医生个人信息添加成功"+new Date());
-            resultMap.put("status",20000);
-            resultMap.put("msg","注册成功");
-            resultMap.put("data",false);
+            resultMap.put("code",20000);
+            resultMap.put("msg","个人信息添加成功");
+            resultMap.put("result",false);
         }else{
-            resultMap.put("status",20005);
-            resultMap.put("msg","注册失败");
-            resultMap.put("data",false);
+            resultMap.put("code",20005);
+            resultMap.put("msg","个人信息添加失败");
+            resultMap.put("result",false);
         }
 
         return resultMap;
@@ -70,14 +72,14 @@ public class DoctorDetailController extends BaseController{
     public Map updDoctorInfo(DoctorDetail doctorDetail){
         int result=doctorDetailService.updateSelective(doctorDetail);
         if(result>0){
-            resultMap.put("status",20000);
+            resultMap.put("code",20000);
             log.info(doctorDetail.getDoctorName()+"医生个人信息修改成功"+new Date());
             resultMap.put("msg","医生详情更新成功");
-            resultMap.put("data",false);
+            resultMap.put("result",false);
         }else{
-            resultMap.put("status",20005);
+            resultMap.put("code",20005);
             resultMap.put("msg","医生详情更新失败");
-            resultMap.put("data",false);
+            resultMap.put("result",false);
         }
 
         return resultMap;
@@ -96,25 +98,26 @@ public class DoctorDetailController extends BaseController{
 *    @Params:   * @param null
 */
 
-    @RequestMapping(value = "/select",method = RequestMethod.GET)
-    public Map findDoctorInfo(@RequestParam("doctorId") String doctorId){
-       List<DoctorDetail> list=doctorDetailService.selectByDoctorId(doctorId);
+    @GetMapping(value = "/select")
+    public Map findDoctorInfo(String token){
+       List<DoctorDetail> list=doctorDetailService.selectByDoctorId(redisSerive.getDoctor(token).getId());
+
         if (list==null){
-            resultMap.put("status",20004);
+            resultMap.put("code",20004);
             resultMap.put("msg","没有数据");
-            resultMap.put("data",null);
+            resultMap.put("result",null);
 
         }else if(list.size()==1){
             DoctorDetail doctorDetail=list.get(0);
             log.info(doctorDetail.getDoctorName()+"医生个人信息查询成功"+new Date());
-            resultMap.put("status",20000);
+            resultMap.put("code",20000);
             resultMap.put("msg","数据获取成功");
-            resultMap.put("data",doctorDetail);
+            resultMap.put("result",doctorDetail);
 
         }else{
-            resultMap.put("status",20006);
+            resultMap.put("code",20006);
             resultMap.put("msg","数据获取不只一条");
-            resultMap.put("data",null);
+            resultMap.put("result",null);
         }
 
         return resultMap;
