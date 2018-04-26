@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: doctor-server
+  cloud:
+    config:
+      uri: http://localhost:8880
+      label: master
+      profile: dev
+
+server:
+  port: 8801
