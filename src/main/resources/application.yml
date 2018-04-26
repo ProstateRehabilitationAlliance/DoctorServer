@@ -6,7 +6,7 @@ spring:
   application:
     name: doctor-server
   datasource:
-    url: jdbc:mysql://192.168.0.221:3306/pra
+    url: jdbc:mysql://192.168.1.221:3306/pra
     username: root
     password: root
     driver-class-name: com.mysql.jdbc.Driver
@@ -33,7 +33,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone:  http://192.168.0.222:8888/eureka/
+      defaultZone:  http://192.168.1.222:8888/eureka/
 
 
 feign:
