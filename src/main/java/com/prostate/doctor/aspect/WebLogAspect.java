@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class WebLogAspect {
 
 
-    @Pointcut("execution(public * com.prostate.*..*.*(..))")
+    @Pointcut("execution(public * com.prostate.doctor.controller..*.*(..))")
     public void webLog(){}
 
     @Before("webLog()")
