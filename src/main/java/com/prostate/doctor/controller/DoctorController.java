@@ -113,7 +113,10 @@ public class DoctorController extends BaseController {
             resultMap.put("code", 20005);
             resultMap.put("msg", "用户名或密码不正确");
             resultMap.put("result", null);
+            return resultMap;
+
         } else if (list.size() == 1) {
+            log.info("======获取成功====");
             String salt = list.get(0).getSalt();
             if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
                 String token = request.getSession().getId();
@@ -121,10 +124,17 @@ public class DoctorController extends BaseController {
                 resultMap.put("code", 20000);
                 resultMap.put("msg", "登陆成功");
                 resultMap.put("result", token);
+                log.info("======登陆成功====");
+
+                return resultMap;
+
             } else {
+                log.info("======登陆失败====");
+
                 resultMap.put("code", 20004);
                 resultMap.put("msg", "用户名或密码不正确");
                 resultMap.put("result", null);
+                return resultMap;
 
             }
         }
