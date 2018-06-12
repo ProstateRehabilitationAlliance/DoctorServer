@@ -3,7 +3,7 @@ package com.prostate.doctor.controller;
 import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.service.DoctorService;
-import com.prostate.doctor.utlis.JsonUtil;
+import com.prostate.doctor.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
@@ -27,7 +27,7 @@ public class DoctorController extends BaseController {
     private DoctorService doctorService;
 
     @Autowired
-    private JsonUtil<Doctor> jsonUtil;
+    private JsonUtils<Doctor> jsonUtil;
 
     @Autowired
     private RedisSerive redisSerive;

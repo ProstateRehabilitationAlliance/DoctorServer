@@ -3,6 +3,7 @@ package com.prostate.doctor.entity;
 import java.util.Date;
 
 public class DoctorDetail {
+
     private String id;
 
     private String doctorId;
@@ -202,4 +203,5 @@ public class DoctorDetail {
     public void setIosDeviceToken(String iosDeviceToken) {
         this.iosDeviceToken = iosDeviceToken == null ? null : iosDeviceToken.trim();
     }
+
 }

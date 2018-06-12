@@ -1,11 +1,13 @@
 package com.prostate.doctor.cache.redis;
 
 import com.prostate.doctor.entity.Doctor;
-import com.prostate.doctor.utlis.JsonUtil;
+import com.prostate.doctor.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author MaxCoder
@@ -21,16 +23,19 @@ public class RedisSerive {
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
-    private JsonUtil<Doctor> jsonUtil;
+    private JsonUtils<Doctor> jsonUtil;
 
     public void insert(String key,String val) {
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        valueOperations.set(key,val);
+//        valueOperations.set(key,val);
+        valueOperations.set(key,val,60*60*24, TimeUnit.SECONDS);
     }
 
     public String get(String key) {
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
-        return valueOperations.get(key);
+        String val = valueOperations.get(key);
+        valueOperations.set(key,val,60*60*24, TimeUnit.SECONDS);
+        return val;
     }
 
     public Doctor getDoctor(String key) {
