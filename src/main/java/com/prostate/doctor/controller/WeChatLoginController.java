@@ -1,37 +1,48 @@
-//package com.prostate.doctor.controller;
-//
-//import com.prostate.doctor.service.WeChatOauthService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//import org.springframework.web.servlet.ModelAndView;
-//
-//import java.util.Map;
-//
-//@RestController
-//@RequestMapping(value = "/login/weChat")
-//public class WeChatLoginController extends BaseController {
-//
-//    @Autowired
-//    private WeChatOauthService weChatOauthService;
+package com.prostate.doctor.controller;
+
+import com.alibaba.fastjson.JSONObject;
+import com.prostate.doctor.cache.redis.RedisSerive;
+import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.service.WeChatOauthService;
+import com.prostate.doctor.service.WechatUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping(value = "weChat")
+public class WeChatLoginController extends BaseController {
+
+    @Autowired
+    private WeChatOauthService weChatOauthService;
+
+    @Autowired
+    private WechatUserService wechatUserService;
+    @Autowired
+    private RedisSerive redisSerive;
 //    @Autowired
 //    private MemberUserService memberUserService;
-//    /**
-//     * 公众号AppId
-//     */
-//    private final static String APP_ID = "wx081244d52d700819";
-//
-//    /**
-//     * 公众号AppSecret
-//     */
-//    public static final String APP_SECRET = "2eb07faaf608215e7091e594a5b650a7";
-//
-//    public static final String REDIRECT_URI = "http%3a%2f%2fwww.yilaiyiwang.com%2fredirect";
-//
-//    public static final String AUTHOR_URI = "https://open.weixin.qq.com/connect/oauth2/authorize?";
-//
-//    public static final String AUTHOR_PARAM = "appid=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-//
+    /**
+     * 公众号AppId
+     */
+    private final static String APP_ID = "wx081244d52d700819";
+
+    /**
+     * 公众号AppSecret
+     */
+    public static final String APP_SECRET = "2eb07faaf608215e7091e594a5b650a7";
+
+    public static final String REDIRECT_URI = "http%3a%2f%2fwww.yilaiyiwang.com%2fredirect";
+
+    public static final String AUTHOR_URI = "https://open.weixin.qq.com/connect/oauth2/authorize?";
+
+    public static final String AUTHOR_PARAM = "appid=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+
 //    @RequestMapping(value = "oauth")
 //    public ModelAndView redirect(String code, String state) {
 //        //获取ACCESS_TOKEN
@@ -97,7 +108,56 @@
 //        LoggerUtils.debug(getClass(), memberUser.getId());
 //        return new ModelAndView("Client/src/information/orderInfo.html");
 //    }
-//
-//
-//
-//}
+
+    /**
+     * 微信授权登陆接口
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping(value = "login")
+    public Map login(HttpServletRequest request) {
+
+        Map<String, Object> resultMap = new LinkedHashMap<>();
+        WechatUser wechatUser = wechatUserService.selectById("8871fd0d532c11e8967f00163e08d49b");
+        String token = request.getSession().getId();
+        JSONObject.toJSONString(wechatUser);
+        redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
+        resultMap.put("code", 20000);
+        resultMap.put("msg", "登陆成功");
+        resultMap.put("result", token);
+
+        System.out.println(redisSerive.get(token));
+        return resultMap;
+
+    }
+
+    /**
+     * 微信端获取用户信息
+     *
+     * @param token
+     * @return
+     */
+    @PostMapping(value = "getUserInfo")
+    public Map getPatientDetailByToken(String token) {
+        WechatUser wechatUser = redisSerive.getWechatUser(token);
+        return querySuccessResponse(wechatUser);
+    }
+
+    /**
+     * 微信端 获取 医患关系 绑定 二维码 (过期时间5分钟)
+     *
+     * @param token
+     * @return
+     */
+    @PostMapping(value = "getQRCode")
+    public Map getQRCode(String token) {
+
+        WechatUser wechatUser = redisSerive.getWechatUser(token);
+        redisSerive.insert(wechatUser.getId(), wechatUser.getId(), 60 * 5);
+
+        return querySuccessResponse(wechatUser.getId().substring(10, 28));
+    }
+
+
+}

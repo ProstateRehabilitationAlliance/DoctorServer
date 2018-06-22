@@ -1,6 +1,7 @@
 package com.prostate.doctor.cache.redis;
 
 import com.prostate.doctor.entity.Doctor;
+import com.prostate.doctor.entity.WechatUser;
 import com.prostate.doctor.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,6 +32,16 @@ public class RedisSerive {
         valueOperations.set(key,val,60*60*24, TimeUnit.SECONDS);
     }
 
+    /**
+     * @param key
+     * @param val
+     * @param l
+     */
+    public void insert(String key,String val,long l) {
+        ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
+        valueOperations.set(key,val,l, TimeUnit.SECONDS);
+    }
+
     public String get(String key) {
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
         String val = valueOperations.get(key);
@@ -47,5 +58,10 @@ public class RedisSerive {
     public boolean remove(String key) {
         ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
         return stringRedisTemplate.delete(key);
+    }
+
+    public WechatUser getWechatUser(String key) {
+        ValueOperations<String,String> valueOperations = stringRedisTemplate.opsForValue();
+        return jsonUtil.jsonStrToWechatUser(valueOperations.get(key));
     }
 }
