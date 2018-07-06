@@ -5,6 +5,8 @@ import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.entity.WechatUser;
 import com.prostate.doctor.service.WeChatOauthService;
 import com.prostate.doctor.service.WechatUserService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+
+@Slf4j
 @RestController
 @RequestMapping(value = "weChat")
 public class WeChatLoginController extends BaseController {
@@ -25,89 +29,7 @@ public class WeChatLoginController extends BaseController {
     private WechatUserService wechatUserService;
     @Autowired
     private RedisSerive redisSerive;
-//    @Autowired
-//    private MemberUserService memberUserService;
-    /**
-     * 公众号AppId
-     */
-    private final static String APP_ID = "wx081244d52d700819";
 
-    /**
-     * 公众号AppSecret
-     */
-    public static final String APP_SECRET = "2eb07faaf608215e7091e594a5b650a7";
-
-    public static final String REDIRECT_URI = "http%3a%2f%2fwww.yilaiyiwang.com%2fredirect";
-
-    public static final String AUTHOR_URI = "https://open.weixin.qq.com/connect/oauth2/authorize?";
-
-    public static final String AUTHOR_PARAM = "appid=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
-
-//    @RequestMapping(value = "oauth")
-//    public ModelAndView redirect(String code, String state) {
-//        //获取ACCESS_TOKEN
-//        Map<String, Object> resultMap = weChatOauthService.getAccessToken(code);
-//        //刷新ACCESS_TOKEN
-//        resultMap = weChatOauthService.refreshAccessToken(resultMap.get("refresh_token").toString());
-//        //获取 用户信息
-//        Map<String, Object> wechatUserInfoMap = weChatOauthService.getUserInfo(resultMap.get("access_token").toString(), resultMap.get("openid").toString());
-//        //保存用户信息
-//        MemberUser memberUser = new MemberUser();
-//        memberUser.setUsername(wechatUserInfoMap.get("openid").toString());
-//        memberUser.setPassword(resultMap.get("access_token").toString());
-//        memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//        memberUser.setOpenid(wechatUserInfoMap.get("openid").toString());
-//        memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//        memberUser.setSex(wechatUserInfoMap.get("sex").toString());
-//        memberUser.setLanguage(wechatUserInfoMap.get("language").toString());
-//        memberUser.setCity(wechatUserInfoMap.get("city").toString());
-//        memberUser.setProvince(wechatUserInfoMap.get("province").toString());
-//        memberUser.setCountry(wechatUserInfoMap.get("country").toString());
-//        memberUser.setHeadimgurl(wechatUserInfoMap.get("headimgurl").toString());
-//
-//        memberUser = memberUserService.getMemberUserByToken(memberUser);
-//        if(memberUser==null){
-//            memberUser = new MemberUser();
-//            memberUser.setUsername(wechatUserInfoMap.get("openid").toString());
-//            memberUser.setPassword(resultMap.get("access_token").toString());
-//            memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//            memberUser.setOpenid(wechatUserInfoMap.get("openid").toString());
-//            memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//            memberUser.setSex(wechatUserInfoMap.get("sex").toString());
-//            memberUser.setLanguage(wechatUserInfoMap.get("language").toString());
-//            memberUser.setCity(wechatUserInfoMap.get("city").toString());
-//            memberUser.setProvince(wechatUserInfoMap.get("province").toString());
-//            memberUser.setCountry(wechatUserInfoMap.get("country").toString());
-//            memberUser.setHeadimgurl(wechatUserInfoMap.get("headimgurl").toString());
-//            memberUserService.add(memberUser);
-//        }else{
-//            memberUser.setUsername(wechatUserInfoMap.get("openid").toString());
-//            memberUser.setPassword(resultMap.get("access_token").toString());
-//            memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//            memberUser.setOpenid(wechatUserInfoMap.get("openid").toString());
-//            memberUser.setNickname(wechatUserInfoMap.get("nickname").toString());
-//            memberUser.setSex(wechatUserInfoMap.get("sex").toString());
-//            memberUser.setLanguage(wechatUserInfoMap.get("language").toString());
-//            memberUser.setCity(wechatUserInfoMap.get("city").toString());
-//            memberUser.setProvince(wechatUserInfoMap.get("province").toString());
-//            memberUser.setCountry(wechatUserInfoMap.get("country").toString());
-//            memberUser.setHeadimgurl(wechatUserInfoMap.get("headimgurl").toString());
-//            memberUserService.update(memberUser);
-//        }
-//        //shiro 登陆授权
-//        try {
-//            MemberUserTokenManager.login(memberUser, null);
-//        } catch (DisabledAccountException e) {
-//            LoggerUtils.error(getClass(), "<=====帐号已经禁用=====>");
-//        } catch (Exception e) {
-//            LoggerUtils.error(getClass(), "<=====帐号或密码错误=====>" + e);
-//        }
-//        SecurityUtils.getSubject().getSession().setTimeout(-1000l);
-//        memberUser = MemberUserTokenManager.getToken();
-//        LoggerUtils.debug(getClass(), memberUser.getUsername());
-//        LoggerUtils.debug(getClass(), memberUser.getId());
-//        return new ModelAndView("Client/src/information/orderInfo.html");
-//    }
 
     /**
      * 微信授权登陆接口
@@ -115,11 +37,11 @@ public class WeChatLoginController extends BaseController {
      * @param request
      * @return
      */
-    @PostMapping(value = "login")
+//    @PostMapping(value = "login")
     public Map login(HttpServletRequest request) {
 
         Map<String, Object> resultMap = new LinkedHashMap<>();
-        WechatUser wechatUser = wechatUserService.selectById("8871fd0d532c11e8967f00163e08d49b");
+        WechatUser wechatUser = wechatUserService.selectById("3fd5b817800c11e8a09b68cc6e5c9c74");
         String token = request.getSession().getId();
         JSONObject.toJSONString(wechatUser);
         redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
@@ -160,4 +82,85 @@ public class WeChatLoginController extends BaseController {
     }
 
 
+    @RequestMapping(value = "oauth")
+    public Map redirect(String code, HttpServletRequest request) {
+
+        if(code==null||"".equals(code)){
+            return emptyParamResponse();
+        }
+        //获取ACCESS_TOKEN
+        Map<String, Object> resultMap = weChatOauthService.getAccessToken(code);
+        //刷新ACCESS_TOKEN
+        resultMap = weChatOauthService.refreshAccessToken(resultMap.get("refresh_token").toString());
+        //获取 用户信息
+        Map<String, Object> wechatUserInfoMap = weChatOauthService.getUserInfo(resultMap.get("access_token").toString(), resultMap.get("openid").toString());
+
+
+        //保存用户信息
+        String openid = wechatUserInfoMap.get("openid").toString();
+        WechatUser wechatUser = wechatUserService.selectByOpenid(openid);
+        if (wechatUser != null) {
+            log.info("111111");
+            //shiro 登陆授权
+            String token = request.getSession().getId();
+            JSONObject.toJSONString(wechatUser);
+            redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
+            return insertSuccseeResponse(token);
+//                response.sendRedirect("http://www.sicmed.cn:6601/chestnut/index.html?" + token);
+        }
+        wechatUser = new WechatUser();
+        wechatUser.setOpenid(openid);
+        String nickname = filterEmoji(wechatUserInfoMap.get("nickname").toString());
+        wechatUser.setNickName(nickname);
+        wechatUser.setHeadImgUrl(wechatUserInfoMap.get("headimgurl").toString());
+        log.info(wechatUser.toString());
+        wechatUserService.insertSelective(wechatUser);
+        //shiro 登陆授权
+        String token = request.getSession().getId();
+        JSONObject.toJSONString(wechatUser);
+        redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
+        return insertSuccseeResponse(token);
+
+    }
+
+    /**
+     * 过滤emoji 或者 其他非文字类型的字符
+     *
+     * @param source
+     * @return
+     */
+    public static String filterEmoji(String source) {
+        if (StringUtils.isBlank(source)) {
+            return source;
+        }
+        StringBuilder buf = null;
+        int len = source.length();
+        for (int i = 0; i < len; i++) {
+            char codePoint = source.charAt(i);
+            if (isEmojiCharacter(codePoint)) {
+                if (buf == null) {
+                    buf = new StringBuilder(source.length());
+                }
+                buf.append(codePoint);
+            }
+        }
+        if (buf == null) {
+            return source;
+        } else {
+            if (buf.length() == len) {
+                buf = null;
+                return source;
+            } else {
+                return buf.toString();
+            }
+        }
+    }
+
+    private static boolean isEmojiCharacter(char codePoint) {
+        return (codePoint == 0x0) || (codePoint == 0x9) || (codePoint == 0xA)
+                || (codePoint == 0xD)
+                || ((codePoint >= 0x20) && (codePoint <= 0xD7FF))
+                || ((codePoint >= 0xE000) && (codePoint <= 0xFFFD))
+                || ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF));
+    }
 }

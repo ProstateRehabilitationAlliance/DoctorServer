@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.prostate.doctor.mapper.WechatUserMapper">
+<mapper namespace="com.prostate.doctor.mapper.master.WechatUserWriteMapper">
   <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.WechatUser">
     <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="patient_id" jdbcType="VARCHAR" property="patientId" />
@@ -9,15 +9,11 @@
     <result column="head_img_url" jdbcType="VARCHAR" property="headImgUrl" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
-  <insert id="insert" parameterType="com.prostate.doctor.entity.WechatUser">
-    insert into wechat_user (id, patient_id, openid, 
-      nick_name, head_img_url, create_time
-      )
-    values (#{id,jdbcType=VARCHAR}, #{patientId,jdbcType=VARCHAR}, #{openid,jdbcType=VARCHAR}, 
-      #{nickName,jdbcType=VARCHAR}, #{headImgUrl,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.prostate.doctor.entity.WechatUser">
+    <selectKey keyProperty="id" resultType="string" order="BEFORE">
+      select replace(uuid(), '-', '') as id from dual
+    </selectKey>
     insert into wechat_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -60,18 +56,5 @@
       </if>
     </trim>
   </insert>
-  <sql id="Base_Column_List">
-    id,
-    patient_id,
-    openid,
-    nick_name,
-    head_img_url,
-    create_time
-  </sql>
-  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from wechat_user
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
+
 </mapper>

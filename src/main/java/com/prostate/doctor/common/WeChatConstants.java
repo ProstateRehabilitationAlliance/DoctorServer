@@ -4,12 +4,12 @@ public class WeChatConstants {
     /**
      * 公众号AppId
      */
-    public static final String APP_ID = "wx081244d52d700819";
+    public static final String APP_ID = "wx879a26e37acadb20";
 
     /**
      * 公众号AppSecret
      */
-    public static final String APP_SECRET = "2eb07faaf608215e7091e594a5b650a7";
+    public static final String APP_SECRET = "cb2189ca646ed2e83069443e5444a71e";
 
     /**
      * 微信支付商户号

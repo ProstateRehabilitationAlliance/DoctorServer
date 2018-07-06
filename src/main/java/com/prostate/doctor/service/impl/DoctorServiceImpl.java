@@ -1,8 +1,8 @@
 package com.prostate.doctor.service.impl;
 
 import com.prostate.doctor.entity.Doctor;
-import com.prostate.doctor.mapper.DoctorMapper;
-import com.prostate.doctor.service.BaseService;
+import com.prostate.doctor.mapper.master.DoctorWriteMapper;
+import com.prostate.doctor.mapper.slaver.DoctorReadMapper;
 import com.prostate.doctor.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,10 @@ import java.util.List;
 public class DoctorServiceImpl implements DoctorService{
 
     @Autowired
-    private DoctorMapper doctorMapper;
+    private DoctorWriteMapper doctorWriteMapper;
+
+    @Autowired
+    private DoctorReadMapper doctorReadMapper;
 
 
     /**
@@ -31,7 +34,7 @@ public class DoctorServiceImpl implements DoctorService{
     @Override
     public int insertSelective(Doctor doctor) {
 
-        return doctorMapper.insertSelective(doctor);
+        return doctorWriteMapper.insertSelective(doctor);
     }
 
     @Override
@@ -57,19 +60,10 @@ public class DoctorServiceImpl implements DoctorService{
 
     @Override
     public List<Doctor> selectByPhone(String phone) {
-        List<Doctor> list= doctorMapper.selectByPhone(phone);
+        List<Doctor> list= doctorReadMapper.selectByPhone(phone);
         return list;
     }
-          /**
-              *    @Description:   数据更新
-              *    @Date:  18:35  2018/4/19
-              *    @Params:   * @param null
-              */
 
-      
-    @Override
-    public int updDoctorPassword(Doctor doctor) {
 
-        return doctorMapper.updDoctorPassword(doctor);
-    }
+
 }

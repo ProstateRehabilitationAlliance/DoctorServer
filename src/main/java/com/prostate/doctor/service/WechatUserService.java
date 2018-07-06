@@ -5,4 +5,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface WechatUserService extends BaseService<WechatUser>{
+    WechatUser selectByOpenid(String openid);
 }

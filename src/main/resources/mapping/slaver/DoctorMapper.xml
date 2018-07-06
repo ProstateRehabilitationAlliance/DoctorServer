@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.prostate.doctor.mapper.DoctorMapper">
+<mapper namespace="com.prostate.doctor.mapper.slaver.DoctorReadMapper">
   <!--表和实体类对应的关系-->
   <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.Doctor">
     <id column="id" jdbcType="VARCHAR" property="id" />
@@ -20,19 +20,19 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pra_doctor
+    from doctor_user
     where id = #{id,jdbcType=VARCHAR}
   </select>
   <!--通过电话号码查询对应的医生-->
   <select id="selectByPhone" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from pra_doctor
+    from doctor_user
     where doctor_phone = #{doctorPhone,jdbcType=VARCHAR}
   </select>
 <!--通过主键进行删除-->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from pra_doctor
+    delete from doctor_user
     where id = #{id,jdbcType=VARCHAR}
   </delete>
 
@@ -42,7 +42,7 @@
     <selectKey keyProperty="id" resultType="string" order="BEFORE">
       select replace(uuid(), '-', '') as id from dual
     </selectKey>
-    insert into pra_doctor
+    insert into doctor_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -98,7 +98,7 @@
   </insert>
   <!--更新医生的信息-->
   <update id="updateByPrimaryKeySelective" parameterType="com.prostate.doctor.entity.Doctor">
-    update pra_doctor
+    update doctor_user
     <set>
       <if test="doctorPhone != null">
         doctor_phone = #{doctorPhone,jdbcType=VARCHAR},
@@ -126,7 +126,7 @@
   </update>
   <!--更新医生的密码-->
   <update id="updDoctorPassword" parameterType="com.prostate.doctor.entity.Doctor">
-    update pra_doctor
+    update doctor_user
     <set>
       <if test="doctorPhone != null">
         doctor_phone = #{doctorPhone,jdbcType=VARCHAR},

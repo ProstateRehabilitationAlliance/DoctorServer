@@ -13,7 +13,18 @@ public class WechatUser {
 
     private String headImgUrl;
 
+    private String accessToken;
+
     private Date createTime;
+
+    public String getAccessToken() {
+
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public String getId() {
         return id;
@@ -61,5 +72,18 @@ public class WechatUser {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    @Override
+    public String toString() {
+        return "WechatUser{" +
+                "id='" + id + '\'' +
+                ", patientId='" + patientId + '\'' +
+                ", openid='" + openid + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", headImgUrl='" + headImgUrl + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", createTime=" + createTime +
+                '}';
     }
 }

@@ -32,26 +32,26 @@ public class DoctorController extends BaseController {
     @Autowired
     private RedisSerive redisSerive;
 
-    /**
-     * @Description: 检查数据接口
-     * @Date: 9:40  2018/4/20
-     * @Params: * @param null
-     */
-
-    @RequestMapping(value = "check", method = RequestMethod.POST)
-    public Map checkDoctor(@RequestParam("param") String param, @RequestParam("type") Integer type) {
-        log.info("检查数据接口" + new Date());
-        //1.判断手机号是否可用
-        if (type == 1) {
-            List<Doctor> list = doctorService.selectByPhone(param);
-            if (list == null || list.size() == 0) {
-                return querySuccessResponse(true);
-            } else {
-                return querySuccessResponse(false);
-            }
-        }
-        return querySuccessResponse(false);
-    }
+//    /**
+//     * @Description: 检查数据接口
+//     * @Date: 9:40  2018/4/20
+//     * @Params: * @param null
+//     */
+//
+//    @RequestMapping(value = "check", method = RequestMethod.POST)
+//    public Map checkDoctor(@RequestParam("param") String param, @RequestParam("type") Integer type) {
+//        log.info("检查数据接口" + new Date());
+//        //1.判断手机号是否可用
+//        if (type == 1) {
+//            List<Doctor> list = doctorService.selectByPhone(param);
+//            if (list == null || list.size() == 0) {
+//                return querySuccessResponse(true);
+//            } else {
+//                return querySuccessResponse(false);
+//            }
+//        }
+//        return querySuccessResponse(false);
+//    }
 
 
     /**
@@ -141,43 +141,43 @@ public class DoctorController extends BaseController {
         return resultMap;
     }
 
-    /**
-     * @Author: feng
-     * @Description: 修改密码
-     * @Date: 16:45  2018/4/19
-     * @Params: * @param null
-     */
-
-    @RequestMapping(value = "updDoctorPassword", method = RequestMethod.POST)
-    public Map updDoctorPassword(String doctorPhone, String doctorPassword
-            , @RequestParam("newPassword") String newPassword) {
-        List<Doctor> list = doctorService.selectByPhone(doctorPhone);
-        resultMap = new LinkedHashMap<>();
-
-        if (list == null) {
-            resultMap.put("code", 20005);
-            resultMap.put("msg", "没有数据");
-            resultMap.put("result", null);
-        } else if (list.size() == 1) {
-            String salt = list.get(0).getSalt();
-            if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
-                Doctor doctor = list.get(0);
-                log.info(doctorPhone + "手机号密码修改成功" + new Date());
-                System.out.println("===>" + newPassword);
-                doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword + list.get(0).getSalt()).getBytes()));
-                doctorService.updDoctorPassword(doctor);
-
-                resultMap.put("code", 20000);
-                resultMap.put("msg", "密码修改成功");
-                resultMap.put("result", null);
-            } else {
-                resultMap.put("code", 20004);
-                resultMap.put("msg", "密码不正确");
-                resultMap.put("result", null);
-            }
-        }
-        return resultMap;
-    }
+//    /**
+//     * @Author: feng
+//     * @Description: 修改密码
+//     * @Date: 16:45  2018/4/19
+//     * @Params: * @param null
+//     */
+//
+//    @RequestMapping(value = "updDoctorPassword", method = RequestMethod.POST)
+//    public Map updDoctorPassword(String doctorPhone, String doctorPassword
+//            , @RequestParam("newPassword") String newPassword) {
+//        List<Doctor> list = doctorService.selectByPhone(doctorPhone);
+//        resultMap = new LinkedHashMap<>();
+//
+//        if (list == null) {
+//            resultMap.put("code", 20005);
+//            resultMap.put("msg", "没有数据");
+//            resultMap.put("result", null);
+//        } else if (list.size() == 1) {
+//            String salt = list.get(0).getSalt();
+//            if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
+//                Doctor doctor = list.get(0);
+//                log.info(doctorPhone + "手机号密码修改成功" + new Date());
+//                System.out.println("===>" + newPassword);
+//                doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword + list.get(0).getSalt()).getBytes()));
+//                doctorService.updDoctorPassword(doctor);
+//
+//                resultMap.put("code", 20000);
+//                resultMap.put("msg", "密码修改成功");
+//                resultMap.put("result", null);
+//            } else {
+//                resultMap.put("code", 20004);
+//                resultMap.put("msg", "密码不正确");
+//                resultMap.put("result", null);
+//            }
+//        }
+//        return resultMap;
+//    }
 
 
     /**

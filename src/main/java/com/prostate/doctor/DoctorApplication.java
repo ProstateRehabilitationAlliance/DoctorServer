@@ -11,7 +11,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableEurekaServer
 @SpringBootApplication
-@MapperScan(basePackages = {"com.prostate.doctor.mapper"})
 public class DoctorApplication {
 
 	public static void main(String[] args) {
