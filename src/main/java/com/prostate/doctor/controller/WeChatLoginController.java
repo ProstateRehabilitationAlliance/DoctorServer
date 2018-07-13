@@ -6,6 +6,7 @@ import com.prostate.doctor.entity.WechatUser;
 import com.prostate.doctor.service.WeChatOauthService;
 import com.prostate.doctor.service.WechatUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,16 +77,21 @@ public class WeChatLoginController extends BaseController {
     public Map getQRCode(String token) {
 
         WechatUser wechatUser = redisSerive.getWechatUser(token);
-        redisSerive.insert(wechatUser.getId(), wechatUser.getId(), 60 * 5);
 
-        return querySuccessResponse(wechatUser.getId().substring(10, 28));
+        String userId = wechatUser.getId();
+        if (userId != null && userId.length() == 32) {
+            String cacheId = RandomStringUtils.randomNumeric(6);
+            redisSerive.insert(cacheId, wechatUser.getId(), 60 * 5);
+            return querySuccessResponse(cacheId);
+        }
+        return queryEmptyResponse();
     }
 
 
     @RequestMapping(value = "oauth")
     public Map redirect(String code, HttpServletRequest request) {
 
-        if(code==null||"".equals(code)){
+        if (code == null || "".equals(code)) {
             return emptyParamResponse();
         }
         //获取ACCESS_TOKEN
@@ -163,4 +169,5 @@ public class WeChatLoginController extends BaseController {
                 || ((codePoint >= 0xE000) && (codePoint <= 0xFFFD))
                 || ((codePoint >= 0x10000) && (codePoint <= 0x10FFFF));
     }
+
 }
