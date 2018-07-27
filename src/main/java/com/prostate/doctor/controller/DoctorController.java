@@ -2,15 +2,24 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.entity.Doctor;
+import com.prostate.doctor.param.DoctorRegisteParams;
 import com.prostate.doctor.service.DoctorService;
 import com.prostate.doctor.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import javax.validation.Valid;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: developerfengrui
@@ -60,41 +69,36 @@ public class DoctorController extends BaseController {
      * @Date: 12:58  2018/4/19
      * @Params: * @param null
      */
-
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public Map registerDoctor(Doctor doctor) {
-        if (doctor == null) {
-            return emptyParamResponse();
+    public Map registerDoctor(@Valid DoctorRegisteParams doctorRegisteParams) {
+
+        log.info("doctorPhone=" + doctorRegisteParams.getDoctorPhone());
+        log.info("doctorPassword=" + doctorRegisteParams.getDoctorPassword());
+        log.info("smsCode=" + doctorRegisteParams.getSmsCode());
+        //短信验证码校验
+        String ck = redisSerive.getSmsCode(doctorRegisteParams.getSmsCode());
+        if (StringUtils.isEmpty(ck)) {
+            return failedRequest("验证码已过期!");
         }
+        //手机号重复注册数据校验
+        Doctor doctor = new Doctor();
+        doctor.setDoctorPhone(doctorRegisteParams.getDoctorPhone());
         //生成盐
-        Random r = new Random();
-        StringBuilder sb = new StringBuilder(16);
-        sb.append(r.nextInt(99999999)).append(r.nextInt(99999999));
-        int len = sb.length();
-        if (len < 16) {
-            for (int i = 0; i < 16 - len; i++) {
-                sb.append("0");
-            }
-        }
-        String salt = sb.toString();
+        String salt = RandomStringUtils.randomAlphanumeric(32).toLowerCase();
         //设置盐
         doctor.setSalt(salt);
-        //设置创建时间
-        doctor.setCreateTime(new Date());
-        //同时设置上次登录时间
-        doctor.setLastLoginTime(doctor.getCreateTime());
-        //md5加密
-        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((doctor.getDoctorPassword() + salt).getBytes()));
+        //md5密码加密
+        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((doctorRegisteParams.getDoctorPassword() + salt).getBytes()));
+
         //这里做一次数据检查
         List<Doctor> list = doctorService.selectByPhone(doctor.getDoctorPhone());
         if (list == null | list.size() == 0) {
             int result = doctorService.insertSelective(doctor);
             if (result > 0) {
-
-                return insertSuccseeResponse();
+                return registerSuccseeResponse("注册成功");
             }
         }
-        return insertFailedResponse();
+        return registerFiledResponse("注册失败,该手机号已被注册");
     }
 
 
@@ -117,9 +121,10 @@ public class DoctorController extends BaseController {
 
         } else if (list.size() == 1) {
             log.info("======获取成功====");
-            String salt = list.get(0).getSalt();
+            Doctor doctor = list.get(0);
+            String salt = doctor.getSalt();
             if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
-                String token = request.getSession().getId();
+                String token = doctor.getId();
                 redisSerive.insert(token, jsonUtil.objectToJsonStr(list.get(0)));
                 resultMap.put("code", 20000);
                 resultMap.put("msg", "登陆成功");

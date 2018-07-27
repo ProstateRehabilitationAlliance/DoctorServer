@@ -108,7 +108,7 @@ public class WeChatLoginController extends BaseController {
         if (wechatUser != null) {
             log.info("111111");
             //shiro 登陆授权
-            String token = request.getSession().getId();
+            String token = wechatUser.getId();
             JSONObject.toJSONString(wechatUser);
             redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
             return insertSuccseeResponse(token);

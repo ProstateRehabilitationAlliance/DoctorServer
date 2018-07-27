@@ -3,6 +3,7 @@ package com.prostate.doctor.entity;
 import java.util.Date;
 
 public class Doctor {
+
     private String id;
 
     private String doctorPhone;

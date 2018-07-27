@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prostate.doctor.mapper.slaver.DoctorDetailReadMapper">
+    <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.DoctorDetail">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="doctor_id" jdbcType="VARCHAR" property="doctorId"/>
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName"/>
+        <result column="doctor_age" jdbcType="VARCHAR" property="doctorAge"/>
+        <result column="doctor_sex" jdbcType="VARCHAR" property="doctorSex"/>
+        <result column="doctor_address" jdbcType="VARCHAR" property="doctorAddress"/>
+        <result column="doctor_card_number" jdbcType="VARCHAR" property="doctorCardNumber"/>
+        <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId"/>
+        <result column="branch_id" jdbcType="VARCHAR" property="branchId"/>
+        <result column="title_id" jdbcType="VARCHAR" property="titleId"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+        <result column="doctor_resume" jdbcType="VARCHAR" property="doctorResume"/>
+        <result column="doctor_strong" jdbcType="VARCHAR" property="doctorStrong"/>
+        <result column="lable_inquiry" jdbcType="VARCHAR" property="lableInquiry"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delete_time" jdbcType="TIMESTAMP" property="deleteTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="delete_user" jdbcType="VARCHAR" property="deleteUser"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, doctor_id, doctor_name, doctor_age, doctor_sex, doctor_address, doctor_card_number,
+        hospital_id, branch_id, title_id, head_img, doctor_resume, doctor_strong,lable_inquiry, create_time,
+        create_user, update_time, delete_time, update_user, delete_user, del_flag
+    </sql>
+    <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from doctor_detail
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+
+    <resultMap id="DoctorDetailListBeanResultMap" type="com.prostate.doctor.bean.DoctorDetailListBean">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="doctor_name" jdbcType="VARCHAR" property="doctorName"/>
+        <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId"/>
+        <result column="title_id" jdbcType="VARCHAR" property="titleId"/>
+        <result column="head_img" jdbcType="VARCHAR" property="headImg"/>
+    </resultMap>
+    <sql id="DoctorDetailListBean_Column_List">
+        id,doctor_name, hospital_id,title_id, head_img
+    </sql>
+    <select id="getDoctorDetailByArrayParams" resultMap="DoctorDetailListBeanResultMap">
+        select
+        <include refid="DoctorDetailListBean_Column_List"/>
+        from doctor_detail
+        where id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="selectDetailListByParams" resultMap="DoctorDetailListBeanResultMap">
+        select
+        <include refid="DoctorDetailListBean_Column_List"/>
+        from doctor_detail
+        <where>
+            del_flag = 0
+            <if test="doctorName != null and doctorName != ''">
+                AND doctor_name LIKE CONCAT(CONCAT('%',#{doctorName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                AND hospital_id = #{hospitalId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+</mapper>

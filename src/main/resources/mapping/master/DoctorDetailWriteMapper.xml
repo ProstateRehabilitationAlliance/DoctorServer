@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prostate.doctor.mapper.master.DoctorDetailWriteMapper">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from doctor_detail
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insertSelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
+    insert into doctor_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="doctorId != null">
+        doctor_id,
+      </if>
+      <if test="doctorName != null">
+        doctor_name,
+      </if>
+      <if test="doctorAge != null">
+        doctor_age,
+      </if>
+      <if test="doctorSex != null">
+        doctor_sex,
+      </if>
+      <if test="doctorAddress != null">
+        doctor_address,
+      </if>
+      <if test="doctorCardNumber != null">
+        doctor_card_number,
+      </if>
+      <if test="hospitalId != null">
+        hospital_id,
+      </if>
+      <if test="branchId != null">
+        branch_id,
+      </if>
+      <if test="titleId != null">
+        title_id,
+      </if>
+      <if test="headImg != null">
+        head_img,
+      </if>
+      <if test="doctorResume != null">
+        doctor_resume,
+      </if>
+      <if test="doctorStrong != null">
+        doctor_strong,
+      </if>
+      <if test="lableInquiry != null">
+        lable_inquiry,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createUser != null">
+        create_user,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="deleteTime != null">
+        delete_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="deleteUser != null">
+        delete_user,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorId != null">
+        #{doctorId,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorName != null">
+        #{doctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorAge != null">
+        #{doctorAge,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorSex != null">
+        #{doctorSex,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorAddress != null">
+        #{doctorAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorCardNumber != null">
+        #{doctorCardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalId != null">
+        #{hospitalId,jdbcType=VARCHAR},
+      </if>
+      <if test="branchId != null">
+        #{branchId,jdbcType=VARCHAR},
+      </if>
+      <if test="titleId != null">
+        #{titleId,jdbcType=VARCHAR},
+      </if>
+      <if test="headImg != null">
+        #{headImg,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorResume != null">
+        #{doctorResume,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorStrong != null">
+        #{doctorStrong,jdbcType=VARCHAR},
+      </if>
+      <if test="lableInquiry != null">
+        #{lableInquiry,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null">
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteUser != null">
+        #{deleteUser,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateSelective" parameterType="com.prostate.doctor.entity.DoctorDetail">
+    update doctor_detail
+    <set>
+      <if test="doctorId != null">
+        doctor_id = #{doctorId,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorName != null">
+        doctor_name = #{doctorName,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorAge != null">
+        doctor_age = #{doctorAge,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorSex != null">
+        doctor_sex = #{doctorSex,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorAddress != null">
+        doctor_address = #{doctorAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorCardNumber != null">
+        doctor_card_number = #{doctorCardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="hospitalId != null">
+        hospital_id = #{hospitalId,jdbcType=VARCHAR},
+      </if>
+      <if test="branchId != null">
+        branch_id = #{branchId,jdbcType=VARCHAR},
+      </if>
+      <if test="titleId != null">
+        title_id = #{titleId,jdbcType=VARCHAR},
+      </if>
+      <if test="headImg != null">
+        head_img = #{headImg,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorResume != null">
+        doctor_resume = #{doctorResume,jdbcType=VARCHAR},
+      </if>
+      <if test="doctorStrong != null">
+        doctor_strong = #{doctorStrong,jdbcType=VARCHAR},
+      </if>
+      <if test="lableInquiry != null">
+        lable_inquiry = #{lableInquiry,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null">
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deleteTime != null">
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteUser != null">
+        delete_user = #{deleteUser,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

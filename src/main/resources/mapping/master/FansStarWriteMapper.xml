@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.prostate.doctor.mapper.master.FansStarWriteMapper">
+    <delete id="deleteById" parameterType="java.lang.String">
+        delete from fans_star
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteByParams" parameterType="com.prostate.doctor.entity.FansStar">
+        delete from fans_star
+        <where>
+            fans_id = #{fansId,jdbcType=VARCHAR}
+            AND star_id = #{starId,jdbcType=VARCHAR}
+        </where>
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.prostate.doctor.entity.FansStar">
+        <selectKey keyProperty="id" resultType="string" order="BEFORE">
+            select replace(uuid(), '-', '') as id from dual
+        </selectKey>
+        insert into fans_star
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="fansId != null">
+                fans_id,
+            </if>
+            <if test="starId != null">
+                star_id,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="fansId != null">
+                #{fansId,jdbcType=VARCHAR},
+            </if>
+            <if test="starId != null">
+                #{starId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateSelective" parameterType="com.prostate.doctor.entity.FansStar">
+        update fans_star
+        <set>
+            <if test="fansId != null">
+                fans_id = #{fansId,jdbcType=VARCHAR},
+            </if>
+            <if test="starId != null">
+                star_id = #{starId,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+</mapper>
