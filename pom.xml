@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.prostate</groupId>
-	<artifactId>doctor</artifactId>
+	<artifactId>UserServer</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>doctor</name>
-	<description>Spring Cloud Doctor Server</description>
+	<name>UserServer</name>
+	<description>Spring Cloud User Server</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -160,7 +160,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.prostate.doctor.DoctorApplication</mainClass>
+							<mainClass>com.prostate.doctor.UserApplication</mainClass>
 							<classpathPrefix>lib/</classpathPrefix>
 						</manifest>
 					</archive>
