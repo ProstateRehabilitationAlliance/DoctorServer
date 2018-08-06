@@ -7,7 +7,9 @@ import com.prostate.doctor.service.FansStarService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FansStarServiceImpl implements FansStarService {
@@ -52,4 +54,5 @@ public class FansStarServiceImpl implements FansStarService {
     public String getFansCount(String doctorId) {
         return fansStarReadMapper.getFansCount(doctorId);
     }
+
 }

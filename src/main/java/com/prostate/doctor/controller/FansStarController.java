@@ -49,7 +49,7 @@ public class FansStarController extends BaseController {
     }
 
     /**
-     * 关注医生
+     * 取消关注医生
      *
      * @param doctorId
      * @param token

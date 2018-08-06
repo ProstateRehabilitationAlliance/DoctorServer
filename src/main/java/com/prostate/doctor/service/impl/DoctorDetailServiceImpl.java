@@ -1,5 +1,6 @@
 package com.prostate.doctor.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.prostate.doctor.bean.DoctorDetailListBean;
 import com.prostate.doctor.entity.DoctorDetail;
 import com.prostate.doctor.mapper.master.DoctorDetailWriteMapper;
@@ -8,7 +9,9 @@ import com.prostate.doctor.service.DoctorDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -54,6 +57,24 @@ public class DoctorDetailServiceImpl implements DoctorDetailService {
     @Override
     public List<DoctorDetailListBean> selectDetailListByParams(DoctorDetail doctorDetail) {
         return doctorDetailReadMapper.selectDetailListByParams(doctorDetail);
+    }
+
+    @Override
+    public Map<String, String> selectStars(List<String> starList) {
+
+        List<DoctorDetailListBean> doctorDetailListBeanList = doctorDetailReadMapper.getDoctorDetailByArrayParams(starList);
+
+        if (doctorDetailListBeanList == null || doctorDetailListBeanList.isEmpty()) {
+            return null;
+        }
+        Map<String, String> starMap = new LinkedHashMap<>();
+        for (DoctorDetailListBean doctorDetailListBean : doctorDetailListBeanList) {
+
+            String doctorDetailListBeanStr = JSONObject.toJSONString(doctorDetailListBean);
+
+            starMap.put(doctorDetailListBean.getId(), doctorDetailListBeanStr);
+        }
+        return starMap;
     }
 
 
