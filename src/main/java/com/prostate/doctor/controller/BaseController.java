@@ -8,6 +8,23 @@ public class BaseController {
 
     public static Map<String, Object> resultMap;
 
+
+
+    public Map loginSuccessResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20000");
+        resultMap.put("msg", "LOGIN_SUCCESS");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    public Map loginFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20005");
+        resultMap.put("msg", "LOGIN_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
     /**
      * 参数为空返回值
      *

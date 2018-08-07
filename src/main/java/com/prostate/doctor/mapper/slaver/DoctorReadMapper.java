@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface DoctorReadMapper extends BaseReadMapper<Doctor>{
 
-    List<Doctor> selectByPhone(String phone);
+    Doctor selectByPhone(String phone);
 }

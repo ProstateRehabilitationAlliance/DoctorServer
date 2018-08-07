@@ -39,7 +39,7 @@ public class DoctorServiceImpl implements DoctorService{
 
     @Override
     public int updateSelective(Doctor doctor) {
-        return 0;
+        return doctorWriteMapper.updateSelective(doctor);
     }
 
     @Override
@@ -59,9 +59,8 @@ public class DoctorServiceImpl implements DoctorService{
 
 
     @Override
-    public List<Doctor> selectByPhone(String phone) {
-        List<Doctor> list= doctorReadMapper.selectByPhone(phone);
-        return list;
+    public Doctor selectByPhone(String phone) {
+        return doctorReadMapper.selectByPhone(phone);
     }
 
 

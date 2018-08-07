@@ -15,7 +15,7 @@ import java.util.List;
 public interface DoctorService extends BaseService<Doctor>{
 
 
-    public List<Doctor> selectByPhone(String phone);
+    Doctor selectByPhone(String phone);
 
 
 

@@ -2,6 +2,7 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.entity.Doctor;
+import com.prostate.doctor.feignService.ThirdServer;
 import com.prostate.doctor.param.DoctorRegisteParams;
 import com.prostate.doctor.service.DoctorService;
 import com.prostate.doctor.util.JsonUtils;
@@ -10,15 +11,10 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,111 +37,139 @@ public class DoctorController extends BaseController {
     @Autowired
     private RedisSerive redisSerive;
 
-//    /**
-//     * @Description: 检查数据接口
-//     * @Date: 9:40  2018/4/20
-//     * @Params: * @param null
-//     */
-//
-//    @RequestMapping(value = "check", method = RequestMethod.POST)
-//    public Map checkDoctor(@RequestParam("param") String param, @RequestParam("type") Integer type) {
-//        log.info("检查数据接口" + new Date());
-//        //1.判断手机号是否可用
-//        if (type == 1) {
-//            List<Doctor> list = doctorService.selectByPhone(param);
-//            if (list == null || list.size() == 0) {
-//                return querySuccessResponse(true);
-//            } else {
-//                return querySuccessResponse(false);
-//            }
-//        }
-//        return querySuccessResponse(false);
-//    }
+    @Autowired
+    private ThirdServer thirdServer;
 
 
     /**
-     * @Author: feng
-     * @Description: 注册接口
-     * @Date: 12:58  2018/4/19
-     * @Params: * @param null
+     * 手机号 短信验证码 注册 接口
+     * @param doctorRegisteParams
+     * @return
      */
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public Map registerDoctor(@Valid DoctorRegisteParams doctorRegisteParams) {
 
-        log.info("doctorPhone=" + doctorRegisteParams.getDoctorPhone());
-        log.info("doctorPassword=" + doctorRegisteParams.getDoctorPassword());
-        log.info("smsCode=" + doctorRegisteParams.getSmsCode());
+        String doctorPhone = doctorRegisteParams.getDoctorPhone();
+        String smsCode = doctorRegisteParams.getSmsCode();
+        String doctorPassword = doctorRegisteParams.getDoctorPassword();
+
+
+        Doctor doctor = doctorService.selectByPhone(doctorPhone);
+        if (doctor != null) {
+            return registerFiledResponse("手机号码已注册过");
+        }
         //短信验证码校验
-        String ck = redisSerive.getSmsCode(doctorRegisteParams.getSmsCode());
+        String ck = redisSerive.getSmsCode(smsCode);
         if (StringUtils.isEmpty(ck)) {
             return failedRequest("验证码已过期!");
+        } else if (!doctorPhone.equals(ck)) {
+            return failedRequest("手机号码不一致");
         }
         //手机号重复注册数据校验
-        Doctor doctor = new Doctor();
-        doctor.setDoctorPhone(doctorRegisteParams.getDoctorPhone());
+        doctor = new Doctor();
+        doctor.setDoctorPhone(doctorPhone);
         //生成盐
         String salt = RandomStringUtils.randomAlphanumeric(32).toLowerCase();
         //设置盐
         doctor.setSalt(salt);
         //md5密码加密
-        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((doctorRegisteParams.getDoctorPassword() + salt).getBytes()));
+        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()));
 
         //这里做一次数据检查
-        List<Doctor> list = doctorService.selectByPhone(doctor.getDoctorPhone());
-        if (list == null | list.size() == 0) {
-            int result = doctorService.insertSelective(doctor);
-            if (result > 0) {
-                return registerSuccseeResponse("注册成功");
-            }
+
+        int result = doctorService.insertSelective(doctor);
+        if (result > 0) {
+            return registerSuccseeResponse("注册成功");
         }
         return registerFiledResponse("注册失败,该手机号已被注册");
     }
 
 
     /**
-     * @Author: feng
-     * @Description: 2. 登陆接口
-     * @Date: 13:58  2018/4/19
-     * @Params: * @param null
+     * 手机号 密码 登陆 接口
+     * @param doctorPhone
+     * @param doctorPassword
+     * @return
      */
-
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public Map loginDoctor(String doctorPhone, String doctorPassword, HttpServletRequest request) {
-        List<Doctor> list = doctorService.selectByPhone(doctorPhone);
-        resultMap = new LinkedHashMap<>();
-        if (list == null) {
-            resultMap.put("code", 20005);
-            resultMap.put("msg", "用户名或密码不正确");
-            resultMap.put("result", null);
-            return resultMap;
-
-        } else if (list.size() == 1) {
-            log.info("======获取成功====");
-            Doctor doctor = list.get(0);
-            String salt = doctor.getSalt();
-            if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
-                String token = doctor.getId();
-                redisSerive.insert(token, jsonUtil.objectToJsonStr(list.get(0)));
-                resultMap.put("code", 20000);
-                resultMap.put("msg", "登陆成功");
-                resultMap.put("result", token);
-                log.info("======登陆成功====");
-
-                return resultMap;
-
-            } else {
-                log.info("======登陆失败====");
-
-                resultMap.put("code", 20004);
-                resultMap.put("msg", "用户名或密码不正确");
-                resultMap.put("result", null);
-                return resultMap;
-
-            }
+    public Map loginDoctor(String doctorPhone, String doctorPassword) {
+        Doctor doctor = doctorService.selectByPhone(doctorPhone);
+        if (doctor == null) {
+            return loginFailedResponse("用户名或密码不正确");
         }
-        return resultMap;
+        String salt = doctor.getSalt();
+        if (doctor.getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
+            String token = doctor.getId();
+            redisSerive.insert(token, jsonUtil.objectToJsonStr(doctor));
+            log.info("======登陆成功====");
+            return loginSuccessResponse(token);
+        } else {
+            log.info("======登陆失败====");
+            return loginFailedResponse("用户名或密码不正确");
+        }
     }
 
+
+    /**
+     * 手机号 短信验证码 登陆 接口
+     *
+     * @param doctorPhone
+     * @param smsCode
+     */
+    @RequestMapping(value = "smsLogin", method = RequestMethod.POST)
+    public Map smsLogin(String doctorPhone, String smsCode) {
+
+        //短信验证码校验
+        String cachePhone = redisSerive.getSmsCode(smsCode);
+        if (StringUtils.isEmpty(cachePhone)) {
+            return failedRequest("验证码已过期!");
+        } else if (!doctorPhone.equals(cachePhone)) {
+            return failedRequest("手机号码错误");
+        }
+        Doctor doctor = doctorService.selectByPhone(doctorPhone);
+        if (doctor == null) {
+            return loginFailedResponse("手机号或验证码错误");
+        }
+        String token = doctor.getId();
+        redisSerive.insert(token, jsonUtil.objectToJsonStr(doctor));
+
+        return loginSuccessResponse(token);
+    }
+
+    /**
+     * 重设 登陆密码
+     * @param doctorPhone
+     * @param smsCode
+     * @param doctorPassword
+     * @return
+     */
+    @RequestMapping(value = "passwordReset", method = RequestMethod.POST)
+    public Map passwordReset(String doctorPhone, String smsCode, String doctorPassword) {
+        //短信验证码校验
+        String cachePhone = redisSerive.getSmsCode(smsCode);
+        if (StringUtils.isEmpty(cachePhone)) {
+            return failedRequest("验证码已过期!");
+        } else if (!doctorPhone.equals(cachePhone)) {
+            return failedRequest("手机号码错误");
+        }
+
+        Doctor doctor = doctorService.selectByPhone(doctorPhone);
+        if (doctor == null) {
+            return loginFailedResponse("手机号或验证码错误");
+        }
+        //生成盐
+        String salt = RandomStringUtils.randomAlphanumeric(32).toLowerCase();
+        //设置盐
+        doctor.setSalt(salt);
+        //md5密码加密
+        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()));
+
+        int i = doctorService.updateSelective(doctor);
+        if (i > 0) {
+            return updateSuccseeResponse("密码重置成功");
+        }
+        return updateFailedResponse("密码重置失败");
+    }
 //    /**
 //     * @Author: feng
 //     * @Description: 修改密码
@@ -206,5 +230,58 @@ public class DoctorController extends BaseController {
             resultMap.put("result", null);
         }
         return resultMap;
+    }
+
+
+    /**
+     * 获取注册 短信验证码
+     *
+     * @param registerPhone
+     * @return
+     */
+    @GetMapping(value = "registerSms")
+    public Map registerSms(String registerPhone) {
+
+        Doctor doctor = doctorService.selectByPhone(registerPhone);
+
+        if (doctor != null) {
+            return registerFiledResponse("手机号码已注册过");
+        }
+        return thirdServer.sendRegisterCode(registerPhone);
+    }
+
+
+    /**
+     * 获取 登陆 短信验证码
+     *
+     * @param loginPhone
+     * @return
+     */
+    @GetMapping(value = "loginSms")
+    public Map loginSms(String loginPhone) {
+
+        Doctor doctor = doctorService.selectByPhone(loginPhone);
+
+        if (doctor == null) {
+            return loginFailedResponse("手机号码未注册!");
+        }
+        return thirdServer.sendLoginCode(loginPhone);
+    }
+
+    /**
+     * 获取 修改密码 短信验证码
+     *
+     * @param passwordPhone
+     * @return
+     */
+    @GetMapping(value = "passwordSms")
+    public Map passwordSms(String passwordPhone) {
+
+        Doctor doctor = doctorService.selectByPhone(passwordPhone);
+
+        if (doctor == null) {
+            return loginFailedResponse("手机号码未注册!");
+        }
+        return thirdServer.sendPasswordReplaceCode(passwordPhone);
     }
 }

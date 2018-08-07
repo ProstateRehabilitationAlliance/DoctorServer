@@ -13,4 +13,19 @@ public class ThirdServerHystrix extends BaseServerHystrix implements ThirdServer
     public Map<String, Object> idCard(String url) {
         return resultMap;
     }
+
+    @Override
+    public Map<String, Object> sendRegisterCode(String phoneNumber) {
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> sendLoginCode(String phoneNumber) {
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> sendPasswordReplaceCode(String phoneNumber) {
+        return resultMap;
+    }
 }
