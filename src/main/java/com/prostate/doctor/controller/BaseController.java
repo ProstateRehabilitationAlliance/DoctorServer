@@ -1,6 +1,9 @@
 package com.prostate.doctor.controller;
 
 
+import com.prostate.doctor.cache.redis.RedisSerive;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -8,7 +11,8 @@ public class BaseController {
 
     public static Map<String, Object> resultMap;
 
-
+    @Autowired
+    protected RedisSerive redisSerive;
 
     public Map loginSuccessResponse(Object result) {
         resultMap = new LinkedHashMap<>();
