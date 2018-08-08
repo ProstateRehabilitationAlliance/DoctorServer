@@ -13,6 +13,7 @@ import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -34,8 +35,6 @@ public class DoctorController extends BaseController {
     @Autowired
     private JsonUtils<Doctor> jsonUtil;
 
-    @Autowired
-    private RedisSerive redisSerive;
 
     @Autowired
     private ThirdServer thirdServer;
@@ -170,44 +169,19 @@ public class DoctorController extends BaseController {
         }
         return updateFailedResponse("密码重置失败");
     }
-//    /**
-//     * @Author: feng
-//     * @Description: 修改密码
-//     * @Date: 16:45  2018/4/19
-//     * @Params: * @param null
-//     */
-//
-//    @RequestMapping(value = "updDoctorPassword", method = RequestMethod.POST)
-//    public Map updDoctorPassword(String doctorPhone, String doctorPassword
-//            , @RequestParam("newPassword") String newPassword) {
-//        List<Doctor> list = doctorService.selectByPhone(doctorPhone);
-//        resultMap = new LinkedHashMap<>();
-//
-//        if (list == null) {
-//            resultMap.put("code", 20005);
-//            resultMap.put("msg", "没有数据");
-//            resultMap.put("result", null);
-//        } else if (list.size() == 1) {
-//            String salt = list.get(0).getSalt();
-//            if (list.get(0).getDoctorPassword().equals(DigestUtils.md5DigestAsHex((doctorPassword + salt).getBytes()))) {
-//                Doctor doctor = list.get(0);
-//                log.info(doctorPhone + "手机号密码修改成功" + new Date());
-//                System.out.println("===>" + newPassword);
-//                doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword + list.get(0).getSalt()).getBytes()));
-//                doctorService.updDoctorPassword(doctor);
-//
-//                resultMap.put("code", 20000);
-//                resultMap.put("msg", "密码修改成功");
-//                resultMap.put("result", null);
-//            } else {
-//                resultMap.put("code", 20004);
-//                resultMap.put("msg", "密码不正确");
-//                resultMap.put("result", null);
-//            }
-//        }
-//        return resultMap;
-//    }
 
+
+    /**
+     * 获取用户登陆信息
+     * @return
+     */
+    @GetMapping(value = "getUsername")
+    public Map<String, Object> getUsername(){
+
+        Doctor doctor = redisSerive.getDoctor();
+
+        return querySuccessResponse(doctor.getDoctorPhone());
+    }
 
     /**
      * @param token
