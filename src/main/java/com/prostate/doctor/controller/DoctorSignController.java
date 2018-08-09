@@ -1,11 +1,11 @@
 package com.prostate.doctor.controller;
 
+import com.prostate.doctor.common.SignStatus;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorSign;
-import com.prostate.doctor.feignService.ThirdServer;
-import com.prostate.doctor.service.DoctorDetailService;
 import com.prostate.doctor.service.DoctorSignService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +23,6 @@ public class DoctorSignController extends BaseController {
     @Autowired
     private DoctorSignService doctorSignService;
 
-    @Autowired
-    private DoctorDetailService doctorDetailService;
-
-    @Autowired
-    private ThirdServer thirdServer;
-
-
     /**
      * 医生提交认证资料
      *
@@ -39,13 +32,20 @@ public class DoctorSignController extends BaseController {
     @PostMapping(value = "add")
     public Map add(@Valid DoctorSign doctorSign) {
 
-        log.info(doctorSign.toString());
-
         Doctor doctor = redisSerive.getDoctor();
 
+        //重复插入校验
+        DoctorSign doctorSigns = doctorSignService.selectByToken(doctor.getId());
+        if (doctorSigns != null) {
+            return insertFailedResponse("认证信息已上传成功!");
+        }
+        //插入数据赋值
         doctorSign.setDoctorId(doctor.getId());
         doctorSign.setId(doctor.getId());
+
         int i = doctorSignService.insertSelective(doctorSign);
+
+        //插入结果校验
         if (i > 0) {
             return insertSuccseeResponse("认证资料提交成功");
         }
@@ -61,7 +61,7 @@ public class DoctorSignController extends BaseController {
     public Map get() {
         Doctor doctor = redisSerive.getDoctor();
 
-        DoctorSign doctorSign = doctorSignService.selectById(doctor.getId());
+        DoctorSign doctorSign = doctorSignService.selectByToken(doctor.getId());
 
         if (doctorSign == null) {
             return queryEmptyResponse();
@@ -69,6 +69,27 @@ public class DoctorSignController extends BaseController {
         return querySuccessResponse(doctorSign);
     }
 
+    /**
+     * 查询认证状态
+     *
+     * @return
+     */
+    @GetMapping(value = "getSignStatus")
+    public Map getSignStatus() {
+        Doctor doctor = redisSerive.getDoctor();
+
+        String signStatus = doctorSignService.selectSignStatus(doctor.getId());
+
+        if (StringUtils.isBlank(signStatus)) {
+            return authenticationEmptyResponse("未填写认证信息");
+        }
+        if (signStatus.equals(SignStatus.AUTHENTICATION_SUCCESS.toString())) {
+            return authenticationSuccessResponse("认证成功");
+        } else if (signStatus.equals(SignStatus.AUTHENTICATION_PROGRESS.toString())) {
+            return authenticationResponse("系统认证中");
+        }
+        return authenticationFailedResponse("认证信息未通过审核");
+    }
 
     /**
      * 修改认证资料
@@ -76,15 +97,15 @@ public class DoctorSignController extends BaseController {
      * @return
      */
     @PostMapping(value = "update")
-    public Map update(DoctorSign doctorSign) {
+    public Map update(@Valid DoctorSign doctorSign) {
         Doctor doctor = redisSerive.getDoctor();
 
         doctorSign.setId(doctor.getId());
         int i = doctorSignService.updateSelective(doctorSign);
         if (i > 0) {
-            return updateSuccseeResponse("认证资料提交成功");
+            return updateSuccseeResponse("认证资料修改成功");
         }
-        return updateFailedResponse("认证资料提交失败");
+        return updateFailedResponse("认证资料修改失败");
     }
 
 }

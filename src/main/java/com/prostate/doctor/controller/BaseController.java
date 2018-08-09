@@ -2,6 +2,7 @@ package com.prostate.doctor.controller;
 
 
 import com.prostate.doctor.cache.redis.RedisSerive;
+import com.prostate.doctor.feignService.ThirdServer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedHashMap;
@@ -13,6 +14,9 @@ public class BaseController {
 
     @Autowired
     protected RedisSerive redisSerive;
+
+    @Autowired
+    protected ThirdServer thirdServer;
 
     public Map loginSuccessResponse(Object result) {
         resultMap = new LinkedHashMap<>();
@@ -251,6 +255,12 @@ public class BaseController {
     }
 
 
+    /**
+     * 注册成功返回
+     *
+     * @param result
+     * @return
+     */
     public Map registerSuccseeResponse(Object result) {
         resultMap = new LinkedHashMap<>();
         resultMap.put("code", "20000");
@@ -259,6 +269,12 @@ public class BaseController {
         return resultMap;
     }
 
+    /**
+     * 注册失败返回
+     *
+     * @param result
+     * @return
+     */
     public Map registerFiledResponse(Object result) {
         resultMap = new LinkedHashMap<>();
         resultMap.put("code", "50008");
@@ -266,6 +282,64 @@ public class BaseController {
         resultMap.put("result", result);
         return resultMap;
     }
+
+    /**
+     * 认证审核通过
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationSuccessResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20000");
+        resultMap.put("msg", "AUTHENTICATION_SUCCESS");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 未认证返回信息
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40002");
+        resultMap.put("msg", "AUTHENTICATION");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 认证信息审核失败返回
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40003");
+        resultMap.put("msg", "AUTHENTICATION_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 认证信息未填写
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationEmptyResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40004");
+        resultMap.put("msg", "AUTHENTICATION_EMPTY");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+
 
 
 }

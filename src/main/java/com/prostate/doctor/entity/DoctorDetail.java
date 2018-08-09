@@ -50,5 +50,30 @@ public class DoctorDetail {
 
     private String delFlag;
 
-
+    @Override
+    public String toString() {
+        return "DoctorDetail{" +
+                "id='" + id + '\'' +
+                ", doctorId='" + doctorId + '\'' +
+                ", doctorName='" + doctorName + '\'' +
+                ", doctorAge='" + doctorAge + '\'' +
+                ", doctorSex='" + doctorSex + '\'' +
+                ", doctorAddress='" + doctorAddress + '\'' +
+                ", doctorCardNumber='" + doctorCardNumber + '\'' +
+                ", hospitalId='" + hospitalId + '\'' +
+                ", branchId='" + branchId + '\'' +
+                ", titleId='" + titleId + '\'' +
+                ", headImg='" + headImg + '\'' +
+                ", doctorResume='" + doctorResume + '\'' +
+                ", doctorStrong='" + doctorStrong + '\'' +
+                ", lableInquiry='" + lableInquiry + '\'' +
+                ", createTime=" + createTime +
+                ", createUser='" + createUser + '\'' +
+                ", updateTime=" + updateTime +
+                ", deleteTime=" + deleteTime +
+                ", updateUser='" + updateUser + '\'' +
+                ", deleteUser='" + deleteUser + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                '}';
+    }
 }

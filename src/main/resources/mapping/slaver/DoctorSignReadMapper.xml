@@ -32,5 +32,21 @@
         from doctor_sign
         where id = #{id,jdbcType=VARCHAR}
     </select>
+    <sql id="Input_Column_List">
+        hospital_id,branch_id,title_id,id_card_front, id_card_contrary, doctor_card_front, doctor_card_contrary,
+        work_card, approve_status
+    </sql>
+    <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Input_Column_List"/>
+        from doctor_sign
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSignStatus" parameterType="java.lang.String" resultType="java.lang.String">
+        select
+        approve_status
+        from doctor_sign
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

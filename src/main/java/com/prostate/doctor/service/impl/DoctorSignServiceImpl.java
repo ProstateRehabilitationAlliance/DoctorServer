@@ -42,4 +42,14 @@ public class DoctorSignServiceImpl implements DoctorSignService {
     public List<DoctorSign> selectByParams(DoctorSign doctorSign) {
         return doctorSignReadMapper.selectByParams(doctorSign);
     }
+
+    @Override
+    public DoctorSign selectByToken(String id) {
+        return doctorSignReadMapper.selectByToken(id);
+    }
+
+    @Override
+    public String selectSignStatus(String id) {
+        return doctorSignReadMapper.selectSignStatus(id);
+    }
 }
