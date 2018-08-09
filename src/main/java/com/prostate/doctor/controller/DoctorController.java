@@ -1,6 +1,5 @@
 package com.prostate.doctor.controller;
 
-import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.feignService.ThirdServer;
 import com.prostate.doctor.param.DoctorRegisteParams;
@@ -8,12 +7,11 @@ import com.prostate.doctor.service.DoctorService;
 import com.prostate.doctor.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -170,6 +168,42 @@ public class DoctorController extends BaseController {
         return updateFailedResponse("密码重置失败");
     }
 
+    /**
+     * 根据旧密码修改密码
+     *
+     * @param oldPassword
+     * @param newPassword
+     * @return
+     */
+    @RequestMapping(value = "updatePassword", method = RequestMethod.POST)
+    public Map updatePassword(String oldPassword, String newPassword) {
+
+        if(StringUtils.isBlank(newPassword)||newPassword.length()<6){
+            return updateFailedResponse("新密码格式不正确");
+        }
+        if (!this.equalsPassword(oldPassword)) {
+            return updateFailedResponse("旧密码不正确");
+        }
+        if (oldPassword.equals(newPassword)) {
+            return updateFailedResponse("新密码与旧密码一样");
+        }
+
+        Doctor doctor = redisSerive.getDoctor();
+        //生成盐
+        String salt = RandomStringUtils.randomAlphanumeric(32).toLowerCase();
+        //设置盐
+        doctor.setSalt(salt);
+        //md5密码加密
+        doctor.setDoctorPassword(DigestUtils.md5DigestAsHex((newPassword + salt).getBytes()));
+
+        int i = doctorService.updateSelective(doctor);
+        if (i > 0) {
+            redisSerive.insert(doctor.getId(), jsonUtil.objectToJsonStr(doctor));
+            return updateSuccseeResponse("密码重置成功");
+        }
+        return updateFailedResponse("密码重置失败");
+    }
+
 
     /**
      * 获取用户登陆信息
@@ -257,5 +291,26 @@ public class DoctorController extends BaseController {
             return loginFailedResponse("手机号码未注册!");
         }
         return thirdServer.sendPasswordReplaceCode(passwordPhone);
+    }
+
+    /**
+     * 校验密码是否是旧密码
+     *
+     * @param password
+     * @return
+     */
+    private boolean equalsPassword(String password) {
+
+        Doctor doctor = redisSerive.getDoctor();
+
+        if (doctor == null) {
+            return false;
+        }
+        String salt = doctor.getSalt();
+        if (doctor.getDoctorPassword().equals(DigestUtils.md5DigestAsHex((password + salt).getBytes()))) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
