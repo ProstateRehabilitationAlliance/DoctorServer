@@ -1,14 +1,16 @@
 package com.prostate.doctor.controller;
 
 import com.prostate.doctor.bean.DoctorDetailBean;
-import com.prostate.doctor.bean.DoctorOwnDetailBean;
 import com.prostate.doctor.bean.DoctorDetailListBean;
-import com.prostate.doctor.cache.redis.RedisSerive;
-
+import com.prostate.doctor.bean.DoctorOwnDetailBean;
+import com.prostate.doctor.common.SignStatus;
+import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorDetail;
+import com.prostate.doctor.entity.DoctorSign;
 import com.prostate.doctor.feignService.StaticServer;
 import com.prostate.doctor.param.UpdateDoctorDetailParams;
 import com.prostate.doctor.service.DoctorDetailService;
+import com.prostate.doctor.service.DoctorSignService;
 import com.prostate.doctor.service.FansStarService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -31,28 +33,52 @@ public class DoctorDetailController extends BaseController {
     private DoctorDetailService doctorDetailService;
 
     @Autowired
-    private RedisSerive redisSerive;
-
-    @Autowired
     private StaticServer staticServer;
 
     @Autowired
     private FansStarService fansStarService;
 
+    @Autowired
+    private DoctorSignService doctorSignService;
+
+
     /**
      * 医生查询个人信息
      *
-     * @param token
      * @return
      */
     @GetMapping(value = "getDoctorDetail")
-    public Map get(String token) {
+    public Map get() {
+
+        Doctor doctor = redisSerive.getDoctor();
+
 
         //根据TOKEN 信息 查询医生个人信息
-        DoctorDetail doctorDetail = doctorDetailService.selectById(token);
+        DoctorDetail doctorDetail = doctorDetailService.selectById(doctor.getId());
 
         if (doctorDetail == null) {
-            return failedRequest("查询个人信息失败!认证未通过!未认证!");
+            DoctorSign doctorSign = doctorSignService.selectByToken(doctor.getId());
+            if (doctorSign == null || !doctorSign.getApproveStatus().equals(SignStatus.AUTHENTICATION_SUCCESS.toString())) {
+                return queryEmptyResponse();
+            }
+            //识别身份证信息
+            Map<String, Object> idCardMap = thirdServer.idCard(doctorSign.getIdCardFront());
+            //添加医生个人信息
+            doctorDetail = new DoctorDetail();
+            doctorDetail.setHospitalId(doctorSign.getHospitalId());
+            doctorDetail.setBranchId(doctorSign.getBranchId());
+            doctorDetail.setTitleId(doctorSign.getTitleId());
+            doctorDetail.setId(doctor.getId());
+            Map<String, Object> idCardInfo = (Map<String, Object>) idCardMap.get("result");
+
+            doctorDetail.setDoctorCardNumber(idCardInfo.get("id").toString());
+            doctorDetail.setDoctorName(idCardInfo.get("name").toString());
+            doctorDetail.setDoctorSex(idCardInfo.get("sex").toString());
+            doctorDetail.setDoctorAddress(idCardInfo.get("address").toString());
+            int i = doctorDetailService.insertSelective(doctorDetail);
+            if (i <= 0) {
+                return queryEmptyResponse();
+            }
         }
 
         DoctorOwnDetailBean doctorOwnDetailBean = new DoctorOwnDetailBean();
