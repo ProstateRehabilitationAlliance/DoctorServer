@@ -3,11 +3,12 @@ package com.prostate.doctor.entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Setter
 @Getter
-public class DoctorDetail {
+public class DoctorDetail extends BaseEntity implements Serializable{
     private String id;
 
     private String doctorId;
@@ -49,6 +50,7 @@ public class DoctorDetail {
     private String deleteUser;
 
     private String delFlag;
+
 
     @Override
     public String toString() {

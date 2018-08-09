@@ -69,5 +69,22 @@
                 AND hospital_id = #{hospitalId,jdbcType=VARCHAR}
             </if>
         </where>
+        limit #{beginNo}, #{pageSize}
     </select>
+
+    <select id="selectDetailListCountByParams" resultType="java.lang.Integer">
+        select
+        COUNT(*)
+        from doctor_detail
+        <where>
+            del_flag = 0
+            <if test="doctorName != null and doctorName != ''">
+                AND doctor_name LIKE CONCAT(CONCAT('%',#{doctorName,jdbcType=VARCHAR},'%'))
+            </if>
+            <if test="hospitalId != null and hospitalId != ''">
+                AND hospital_id = #{hospitalId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
 </mapper>

@@ -77,5 +77,10 @@ public class DoctorDetailServiceImpl implements DoctorDetailService {
         return starMap;
     }
 
+    @Override
+    public int selectDetailListCountByParams(DoctorDetail doctorDetail) {
+        return doctorDetailReadMapper.selectDetailListCountByParams(doctorDetail);
+    }
+
 
 }

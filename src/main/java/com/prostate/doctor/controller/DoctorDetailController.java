@@ -101,16 +101,15 @@ public class DoctorDetailController extends BaseController {
      * 修改 医生个人信息
      *
      * @param updateDoctorDetailParams
-     * @param token
      * @return
      */
     @PostMapping(value = "updateDoctorDetail")
-    public Map updateDoctorDetail(@Valid UpdateDoctorDetailParams updateDoctorDetailParams, String token) {
+    public Map updateDoctorDetail(@Valid UpdateDoctorDetailParams updateDoctorDetailParams) {
 
-
+        Doctor doctor = redisSerive.getDoctor();
         DoctorDetail doctorDetail = new DoctorDetail();
 
-        doctorDetail.setId(token);
+        doctorDetail.setId(doctor.getId());
         doctorDetail.setHeadImg(updateDoctorDetailParams.getHeadImg());
         doctorDetail.setDoctorResume(updateDoctorDetailParams.getDoctorResume());
         doctorDetail.setDoctorStrong(updateDoctorDetailParams.getDoctorStrong());
@@ -132,15 +131,27 @@ public class DoctorDetailController extends BaseController {
      */
     @GetMapping(value = "findDoctorList")
     public Map findDoctorList(String doctorName, String hositalId) {
+
+
         DoctorDetail doctorDetail = new DoctorDetail();
+
+        log.info(doctorDetail.getPageSize() + "-----");
+        log.info(doctorDetail.getPageNo() + "-----");
+        log.info(doctorDetail.getBeginNo() + "-----");
+
         doctorDetail.setDoctorName(doctorName);
         doctorDetail.setHospitalId(hositalId);
 
+        int count = doctorDetailService.selectDetailListCountByParams(doctorDetail);
+
+        if (count <= 0) {
+            return queryEmptyResponse();
+        }
         List<DoctorDetailListBean> doctorDetailListBeans = doctorDetailService.selectDetailListByParams(doctorDetail);
         if (doctorDetailListBeans.isEmpty()) {
             return queryEmptyResponse();
         } else {
-            return querySuccessResponse(doctorDetailListBeans);
+            return querySuccessResponse(doctorDetailListBeans, String.valueOf(count));
         }
     }
 

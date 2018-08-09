@@ -16,4 +16,6 @@ public interface DoctorDetailService extends BaseService<DoctorDetail>{
     List<DoctorDetailListBean> selectDetailListByParams(DoctorDetail doctorDetail);
 
     Map<String,String> selectStars(List<String> starList);
+
+    int selectDetailListCountByParams(DoctorDetail doctorDetail);
 }
