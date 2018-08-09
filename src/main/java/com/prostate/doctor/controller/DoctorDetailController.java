@@ -107,6 +107,7 @@ public class DoctorDetailController extends BaseController {
     public Map updateDoctorDetail(@Valid UpdateDoctorDetailParams updateDoctorDetailParams) {
 
         Doctor doctor = redisSerive.getDoctor();
+
         DoctorDetail doctorDetail = new DoctorDetail();
 
         doctorDetail.setId(doctor.getId());
