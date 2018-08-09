@@ -135,10 +135,6 @@ public class DoctorDetailController extends BaseController {
 
         DoctorDetail doctorDetail = new DoctorDetail();
 
-        log.info(doctorDetail.getPageSize() + "-----");
-        log.info(doctorDetail.getPageNo() + "-----");
-        log.info(doctorDetail.getBeginNo() + "-----");
-
         doctorDetail.setDoctorName(doctorName);
         doctorDetail.setHospitalId(hositalId);
 
