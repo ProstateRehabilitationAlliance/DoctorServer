@@ -32,7 +32,66 @@ public class BaseController {
         resultMap.put("msg", "LOGIN_FAILED");
         resultMap.put("result", result);
         return resultMap;
+
     }
+
+    /**
+     * 认证审核通过
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationSuccessResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20000");
+        resultMap.put("msg", "AUTHENTICATION_SUCCESS");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 未认证返回信息
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40002");
+        resultMap.put("msg", "AUTHENTICATION");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 认证信息审核失败返回
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40003");
+        resultMap.put("msg", "AUTHENTICATION_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    /**
+     * 认证信息未填写
+     *
+     * @param result
+     * @return
+     */
+    public Map authenticationEmptyResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "40004");
+        resultMap.put("msg", "AUTHENTICATION_EMPTY");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+
     /**
      * 参数为空返回值
      *
@@ -53,7 +112,7 @@ public class BaseController {
      */
     public Map failedParamResponse(Object result) {
         resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "40001");
+        resultMap.put("code", "40006");
         resultMap.put("msg", "FAILED_PARAM");
         resultMap.put("result", result);
         return resultMap;
@@ -283,61 +342,7 @@ public class BaseController {
         return resultMap;
     }
 
-    /**
-     * 认证审核通过
-     *
-     * @param result
-     * @return
-     */
-    public Map authenticationSuccessResponse(Object result) {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "20000");
-        resultMap.put("msg", "AUTHENTICATION_SUCCESS");
-        resultMap.put("result", result);
-        return resultMap;
-    }
 
-    /**
-     * 未认证返回信息
-     *
-     * @param result
-     * @return
-     */
-    public Map authenticationResponse(Object result) {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "40002");
-        resultMap.put("msg", "AUTHENTICATION");
-        resultMap.put("result", result);
-        return resultMap;
-    }
-
-    /**
-     * 认证信息审核失败返回
-     *
-     * @param result
-     * @return
-     */
-    public Map authenticationFailedResponse(Object result) {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "40003");
-        resultMap.put("msg", "AUTHENTICATION_FAILED");
-        resultMap.put("result", result);
-        return resultMap;
-    }
-
-    /**
-     * 认证信息未填写
-     *
-     * @param result
-     * @return
-     */
-    public Map authenticationEmptyResponse(Object result) {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "40004");
-        resultMap.put("msg", "AUTHENTICATION_EMPTY");
-        resultMap.put("result", result);
-        return resultMap;
-    }
 
 
 
