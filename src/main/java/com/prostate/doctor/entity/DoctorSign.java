@@ -40,8 +40,8 @@ public class DoctorSign implements Serializable{
     @NotNull
     @Size(min=50, max=120,message = "医师执业证正面照片地址错误!")
     private String doctorCardFront;
-    @NotNull
-    @Size(min=50, max=120,message = "医师执业证反面照片地址错误!")
+//    @NotNull
+//    @Size(min=50, max=120,message = "医师执业证反面照片地址错误!")
     private String doctorCardContrary;
     @NotNull
     @Size(min=50, max=120,message = "手持工牌照片地址错误")
