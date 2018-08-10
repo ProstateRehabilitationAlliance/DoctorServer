@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
     public Map<String, Object> bindExceptionHandler(BindException exception) throws Exception {
         resultMap = new LinkedHashMap<>();
 
-        resultMap.put("code", "40001");
+        resultMap.put("code", "40007");
         resultMap.put("msg", "FAILED_PARAM");
         resultMap.put("result", fieldErrorsBuilder(exception.getFieldErrors()));
 
