@@ -96,7 +96,25 @@ public class DoctorDetailController extends BaseController {
         return querySuccessResponse(doctorOwnDetailBean);
     }
 
+    /**
+     * 查询 身份证信息
+     * @return
+     */
+    @GetMapping(value = "getIdCardInfo")
+    public Map getIdCardInfo() {
 
+        Doctor doctor = redisSerive.getDoctor();
+
+        //根据TOKEN 信息 查询医生个人信息
+        DoctorDetail doctorDetail = doctorDetailService.selectIdCardInfo(doctor.getId());
+
+        if (doctorDetail == null) {
+            return queryEmptyResponse();
+        }
+        String cardNo = doctorDetail.getDoctorCardNumber();
+        doctorDetail.setDoctorCardNumber(cardNo.substring(0,3)+"********"+cardNo.substring(cardNo.length()-4,cardNo.length()));
+        return querySuccessResponse(doctorDetail);
+    }
     /**
      * 修改 医生个人信息
      *

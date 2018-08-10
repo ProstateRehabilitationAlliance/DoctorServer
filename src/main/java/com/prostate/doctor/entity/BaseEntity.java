@@ -1,5 +1,6 @@
 package com.prostate.doctor.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
@@ -12,15 +13,19 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class BaseEntity implements Serializable {
-
+    @JsonIgnore
     private int pageSize;
 
+    @JsonIgnore
     private int pageNo;
 
+    @JsonIgnore
     private int beginNo;
 
+    @JsonIgnore
     private final static int PAGE_SIZE = 10;
 
+    @JsonIgnore
     private final static int PAGE_NO = 0;
 
     public BaseEntity() {

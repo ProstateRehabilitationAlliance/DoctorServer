@@ -18,4 +18,6 @@ public interface DoctorDetailService extends BaseService<DoctorDetail>{
     Map<String,String> selectStars(List<String> starList);
 
     int selectDetailListCountByParams(DoctorDetail doctorDetail);
+
+    DoctorDetail selectIdCardInfo(String id);
 }

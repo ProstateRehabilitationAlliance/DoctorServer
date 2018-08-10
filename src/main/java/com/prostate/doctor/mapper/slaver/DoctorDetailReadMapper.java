@@ -13,4 +13,6 @@ public interface DoctorDetailReadMapper extends BaseReadMapper<DoctorDetail>{
     List<DoctorDetailListBean> selectDetailListByParams(DoctorDetail doctorDetail);
 
     int selectDetailListCountByParams(DoctorDetail doctorDetail);
+
+    DoctorDetail selectIdCardInfo(String id);
 }

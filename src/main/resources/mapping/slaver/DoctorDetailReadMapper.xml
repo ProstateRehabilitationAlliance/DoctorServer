@@ -86,5 +86,11 @@
             </if>
         </where>
     </select>
+    <select id="selectIdCardInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+         doctor_name, doctor_sex, doctor_card_number
+        from doctor_detail
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 
 </mapper>
