@@ -1,7 +1,7 @@
 package com.prostate.doctor.mapper.master;
 
-import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.entity.WeChatUser;
 
-public interface WechatUserWriteMapper extends BaseWriteMapper<WechatUser>{
+public interface WechatUserWriteMapper extends BaseWriteMapper<WeChatUser>{
 
 }

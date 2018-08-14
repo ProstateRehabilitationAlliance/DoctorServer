@@ -1,6 +1,6 @@
 package com.prostate.doctor.service.impl;
 
-import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.entity.WeChatUser;
 import com.prostate.doctor.mapper.master.WechatUserWriteMapper;
 import com.prostate.doctor.mapper.slaver.WechatUserReadMapper;
 import com.prostate.doctor.service.WechatUserService;
@@ -18,22 +18,22 @@ public class WechatUserServiceImpl implements WechatUserService {
     private WechatUserReadMapper wechatUserReadMapper;
 
     @Override
-    public int insertSelective(WechatUser wechatUser) {
+    public int insertSelective(WeChatUser wechatUser) {
         return wechatUserWriteMapper.insertSelective(wechatUser);
     }
 
     @Override
-    public int updateSelective(WechatUser wechatUser) {
+    public int updateSelective(WeChatUser wechatUser) {
         return 0;
     }
 
     @Override
-    public WechatUser selectById(String id) {
+    public WeChatUser selectById(String id) {
         return wechatUserReadMapper.selectById(id);
     }
 
     @Override
-    public List<WechatUser> selectByParams(WechatUser wechatUser) {
+    public List<WeChatUser> selectByParams(WeChatUser wechatUser) {
         return null;
     }
 
@@ -43,7 +43,7 @@ public class WechatUserServiceImpl implements WechatUserService {
     }
 
     @Override
-    public WechatUser selectByOpenid(String openid) {
+    public WeChatUser selectByOpenid(String openid) {
         return wechatUserReadMapper.selectByOpenid(openid);
     }
 }

@@ -1,8 +1,8 @@
 package com.prostate.doctor.mapper.slaver;
 
-import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.entity.WeChatUser;
 
-public interface WechatUserReadMapper extends BaseReadMapper<WechatUser>{
+public interface WechatUserReadMapper extends BaseReadMapper<WeChatUser>{
 
-    WechatUser selectByOpenid(String openid);
+    WeChatUser selectByOpenid(String openid);
 }

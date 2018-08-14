@@ -3,7 +3,7 @@ package com.prostate.doctor.util;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.prostate.doctor.entity.Doctor;
-import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.entity.WeChatUser;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,8 +41,8 @@ public class JsonUtils<E> {
         return JSONObject.parseObject(jsonStr);
     }
 
-    public WechatUser jsonStrToWechatUser(String jsonStr){
-        return JSON.parseObject(jsonStr, WechatUser.class);
+    public WeChatUser jsonStrToWechatUser(String jsonStr){
+        return JSON.parseObject(jsonStr, WeChatUser.class);
 
     }
 }

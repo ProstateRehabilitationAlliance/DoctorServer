@@ -2,7 +2,7 @@ package com.prostate.doctor.entity;
 
 import java.util.Date;
 
-public class WechatUser {
+public class WeChatUser {
     private String id;
 
     private String patientId;
@@ -76,7 +76,7 @@ public class WechatUser {
 
     @Override
     public String toString() {
-        return "WechatUser{" +
+        return "WeChatUser{" +
                 "id='" + id + '\'' +
                 ", patientId='" + patientId + '\'' +
                 ", openid='" + openid + '\'' +

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.prostate.doctor.mapper.master.WechatUserWriteMapper">
-  <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.WechatUser">
+  <resultMap id="BaseResultMap" type="com.prostate.doctor.entity.WeChatUser">
     <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="patient_id" jdbcType="VARCHAR" property="patientId" />
     <result column="openid" jdbcType="VARCHAR" property="openid" />
@@ -10,7 +10,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
 
-  <insert id="insertSelective" parameterType="com.prostate.doctor.entity.WechatUser">
+  <insert id="insertSelective" parameterType="com.prostate.doctor.entity.WeChatUser">
     <selectKey keyProperty="id" resultType="string" order="BEFORE">
       select replace(uuid(), '-', '') as id from dual
     </selectKey>
