@@ -4,7 +4,8 @@ public enum SignStatus {
 
     AUTHENTICATION_PROGRESS,//认证中
     AUTHENTICATION_SUCCESS,//认证成功
-    AUTHENTICATION_FAILED //认证失败
+    AUTHENTICATION_FAILED, //认证失败
+    AUTHENTICATION_EMPTY //未填写认证信息
 
 
 }

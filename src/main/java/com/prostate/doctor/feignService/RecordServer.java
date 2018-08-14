@@ -25,4 +25,10 @@ public interface RecordServer {
 
     @PostMapping(value = "clickCount/addPatientClick")
     Map<String, Object> addPatientClick(@RequestParam("userId") String userId);
+
+    @PostMapping(value = "addDoctorUnFocus")
+    Map<String, Object> addDoctorUnFocus(@RequestParam("userId") String userId);
+
+    @PostMapping(value = "addPatientUnFocus")
+    Map<String, Object> addPatientUnFocus(@RequestParam("userId") String userId);
 }

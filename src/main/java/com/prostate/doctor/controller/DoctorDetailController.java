@@ -2,7 +2,6 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.bean.DoctorDetailBean;
 import com.prostate.doctor.bean.DoctorDetailListBean;
-import com.prostate.doctor.bean.DoctorOwnDetailBean;
 import com.prostate.doctor.common.SignStatus;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorDetail;
@@ -81,19 +80,19 @@ public class DoctorDetailController extends BaseController {
             }
         }
 
-        DoctorOwnDetailBean doctorOwnDetailBean = new DoctorOwnDetailBean();
-        doctorOwnDetailBean.setDoctorDetail(doctorDetail);
+//        DoctorOwnDetailBean doctorOwnDetailBean = new DoctorOwnDetailBean();
+//        doctorOwnDetailBean.setDoctorDetail(doctorDetail);
+//
+//        //
+//        String hospitalName = staticServer.getHospitalById(doctorDetail.getHospitalId()).get("result").toString();
+//        String branchName = staticServer.getBranchById(doctorDetail.getBranchId()).get("result").toString();
+//        String titleName = staticServer.getTitleById(doctorDetail.getTitleId()).get("result").toString();
+//
+//        doctorOwnDetailBean.setHospitalName(hospitalName);
+//        doctorOwnDetailBean.setBranchName(branchName);
+//        doctorOwnDetailBean.setTitleName(titleName);
 
-        //
-        String hospitalName = staticServer.getHospitalById(doctorDetail.getHospitalId()).get("result").toString();
-        String branchName = staticServer.getBranchById(doctorDetail.getBranchId()).get("result").toString();
-        String titleName = staticServer.getTitleById(doctorDetail.getTitleId()).get("result").toString();
-
-        doctorOwnDetailBean.setHospitalName(hospitalName);
-        doctorOwnDetailBean.setBranchName(branchName);
-        doctorOwnDetailBean.setTitleName(titleName);
-
-        return querySuccessResponse(doctorOwnDetailBean);
+        return querySuccessResponse(doctorDetail);
     }
 
     /**
@@ -129,10 +128,16 @@ public class DoctorDetailController extends BaseController {
         DoctorDetail doctorDetail = new DoctorDetail();
 
         doctorDetail.setId(doctor.getId());
-        doctorDetail.setHeadImg(updateDoctorDetailParams.getHeadImg());
-        doctorDetail.setDoctorResume(updateDoctorDetailParams.getDoctorResume());
-        doctorDetail.setDoctorStrong(updateDoctorDetailParams.getDoctorStrong());
 
+        if (StringUtils.isNotBlank(updateDoctorDetailParams.getHeadImg())) {
+            doctorDetail.setHeadImg(updateDoctorDetailParams.getHeadImg());
+        }
+        if (StringUtils.isNotBlank(updateDoctorDetailParams.getDoctorResume())) {
+            doctorDetail.setDoctorResume(updateDoctorDetailParams.getDoctorResume());
+        }
+        if (StringUtils.isNotBlank(updateDoctorDetailParams.getDoctorStrong())) {
+            doctorDetail.setDoctorStrong(updateDoctorDetailParams.getDoctorStrong());
+        }
         int i = doctorDetailService.updateSelective(doctorDetail);
         if (i > 0) {
             return updateSuccseeResponse("个人信息修改成功");
@@ -204,7 +209,14 @@ public class DoctorDetailController extends BaseController {
         if (doctorDetailBean == null) {
             return queryEmptyResponse();
         } else {
+            new Thread(() -> {
+
+                recordServer.addDoctorClick(doctorId);
+                Thread.currentThread().interrupt();
+            }).start();
             return querySuccessResponse(doctorDetailBean);
         }
     }
+
+
 }

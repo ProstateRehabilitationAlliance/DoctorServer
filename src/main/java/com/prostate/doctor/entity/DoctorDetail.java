@@ -1,5 +1,6 @@
 package com.prostate.doctor.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,14 +10,16 @@ import java.util.Date;
 
 @Setter
 @Getter
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DoctorDetail extends BaseEntity implements Serializable{
+
     private String id;
 
+    @JsonIgnore
     private String doctorId;
 
     private String doctorName;
-
+    @JsonIgnore
     private String doctorAge;
 
     private String doctorSex;
@@ -37,20 +40,22 @@ public class DoctorDetail extends BaseEntity implements Serializable{
 
     private String doctorStrong;
 
+    @JsonIgnore
     private String lableInquiry;
-
+    @JsonIgnore
     private Date createTime;
-
+    @JsonIgnore
     private String createUser;
-
+    @JsonIgnore
     private Date updateTime;
-
+    @JsonIgnore
     private Date deleteTime;
-
+    @JsonIgnore
     private String updateUser;
-
+    @JsonIgnore
     private String deleteUser;
 
+    @JsonIgnore
     private String delFlag;
 
 

@@ -2,7 +2,7 @@ package com.prostate.doctor.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.prostate.doctor.cache.redis.RedisSerive;
-import com.prostate.doctor.entity.WechatUser;
+import com.prostate.doctor.entity.WeChatUser;
 import com.prostate.doctor.service.WeChatOauthService;
 import com.prostate.doctor.service.WechatUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +42,7 @@ public class WeChatLoginController extends BaseController {
     public Map login(HttpServletRequest request) {
 
         Map<String, Object> resultMap = new LinkedHashMap<>();
-        WechatUser wechatUser = wechatUserService.selectById("3fd5b817800c11e8a09b68cc6e5c9c74");
+        WeChatUser wechatUser = wechatUserService.selectById("3fd5b817800c11e8a09b68cc6e5c9c74");
         String token = request.getSession().getId();
         JSONObject.toJSONString(wechatUser);
         redisSerive.insert(token, JSONObject.toJSONString(wechatUser));
@@ -63,7 +63,7 @@ public class WeChatLoginController extends BaseController {
      */
     @PostMapping(value = "getUserInfo")
     public Map getPatientDetailByToken(String token) {
-        WechatUser wechatUser = redisSerive.getWechatUser(token);
+        WeChatUser wechatUser = redisSerive.getWechatUser(token);
         return querySuccessResponse(wechatUser);
     }
 
@@ -76,7 +76,7 @@ public class WeChatLoginController extends BaseController {
     @PostMapping(value = "getQRCode")
     public Map getQRCode(String token) {
 
-        WechatUser wechatUser = redisSerive.getWechatUser(token);
+        WeChatUser wechatUser = redisSerive.getWechatUser(token);
 
         String userId = wechatUser.getId();
         if (userId != null && userId.length() == 32) {
@@ -104,7 +104,7 @@ public class WeChatLoginController extends BaseController {
 
         //保存用户信息
         String openid = wechatUserInfoMap.get("openid").toString();
-        WechatUser wechatUser = wechatUserService.selectByOpenid(openid);
+        WeChatUser wechatUser = wechatUserService.selectByOpenid(openid);
         if (wechatUser != null) {
             log.info("111111");
             //shiro 登陆授权
@@ -114,7 +114,7 @@ public class WeChatLoginController extends BaseController {
             return insertSuccseeResponse(token);
 //                response.sendRedirect("http://www.sicmed.cn:6601/chestnut/index.html?" + token);
         }
-        wechatUser = new WechatUser();
+        wechatUser = new WeChatUser();
         wechatUser.setOpenid(openid);
         String nickname = filterEmoji(wechatUserInfoMap.get("nickname").toString());
         wechatUser.setNickName(nickname);

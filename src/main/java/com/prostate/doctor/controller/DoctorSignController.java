@@ -81,14 +81,14 @@ public class DoctorSignController extends BaseController {
         String signStatus = doctorSignService.selectSignStatus(doctor.getId());
 
         if (StringUtils.isBlank(signStatus)) {
-            return authenticationEmptyResponse("未填写认证信息");
+            return authenticationEmptyResponse(SignStatus.AUTHENTICATION_EMPTY);
         }
         if (signStatus.equals(SignStatus.AUTHENTICATION_SUCCESS.toString())) {
-            return authenticationSuccessResponse("认证成功");
+            return authenticationSuccessResponse(signStatus);
         } else if (signStatus.equals(SignStatus.AUTHENTICATION_PROGRESS.toString())) {
-            return authenticationResponse("系统认证中");
+            return authenticationResponse(signStatus);
         }
-        return authenticationFailedResponse("认证信息未通过审核");
+        return authenticationFailedResponse(signStatus);
     }
 
     /**
@@ -101,6 +101,7 @@ public class DoctorSignController extends BaseController {
         Doctor doctor = redisSerive.getDoctor();
 
         doctorSign.setId(doctor.getId());
+        doctorSign.setApproveStatus(SignStatus.AUTHENTICATION_PROGRESS.toString());
         int i = doctorSignService.updateSelective(doctorSign);
         if (i > 0) {
             return updateSuccseeResponse("认证资料修改成功");
