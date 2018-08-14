@@ -293,6 +293,14 @@ public class DoctorController extends BaseController {
         return thirdServer.sendPasswordReplaceCode(passwordPhone);
     }
 
+    @PostMapping(value = "logOut")
+    public Map logOut() {
+
+        redisSerive.remove(getToken());
+
+        return logOutSuccessResponse("退出成功");
+    }
+
     /**
      * 校验密码是否是旧密码
      *
