@@ -192,19 +192,6 @@ public class BaseController {
      *
      * @return
      */
-    public Map insertFailedResponse() {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "50003");
-        resultMap.put("msg", "INSERT_FAILED");
-        resultMap.put("result", null);
-        return resultMap;
-    }
-
-    /**
-     * INSERT 失败返回值
-     *
-     * @return
-     */
     public Map insertFailedResponse(Object result) {
         resultMap = new LinkedHashMap<>();
         resultMap.put("code", "50003");
@@ -213,18 +200,6 @@ public class BaseController {
         return resultMap;
     }
 
-    /**
-     * 插入请求成功返回值
-     *
-     * @return
-     */
-    public Map insertSuccseeResponse() {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "20000");
-        resultMap.put("msg", "INSERT_SUCCESS");
-        resultMap.put("result", null);
-        return resultMap;
-    }
 
     /**
      * 插入请求成功返回值
@@ -240,18 +215,7 @@ public class BaseController {
         return resultMap;
     }
 
-    /**
-     * UPDATE成功返回值
-     *
-     * @return
-     */
-    public Map updateSuccseeResponse() {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "20000");
-        resultMap.put("msg", "UPDATE_SUCCESS");
-        resultMap.put("result", null);
-        return resultMap;
-    }
+
 
     /**
      * UPDATE成功返回值
@@ -267,18 +231,6 @@ public class BaseController {
         return resultMap;
     }
 
-    /**
-     * UPDATE请求失败返回值
-     *
-     * @return
-     */
-    public Map updateFailedResponse() {
-        resultMap = new LinkedHashMap<>();
-        resultMap.put("code", "50004");
-        resultMap.put("msg", "UPDATE_FAILED");
-        resultMap.put("result", null);
-        return resultMap;
-    }
 
     /**
      * UPDATE请求失败返回值
@@ -366,5 +318,51 @@ public class BaseController {
         return resultMap;
     }
 
+    /**
+     * 修改密码返回信息
+     *
+     * @param result
+     * @return
+     */
 
+
+    public Map updatePasswordSuccessResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20000");
+        resultMap.put("msg", "UPDATE_PASSWORD_SUCCESS");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    public Map newPasswordFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "51001");
+        resultMap.put("msg", "NEW_PASSWORD_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    public Map oldPasswordFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "51002");
+        resultMap.put("msg", "OLD_PASSWORD_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    public Map oldPasswordEqualsNewPasswordResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "51003");
+        resultMap.put("msg", "OLD_PASSWORD_EQUALS_PASSWORD");
+        resultMap.put("result", result);
+        return resultMap;
+    }
+
+    public Map updatePasswordFailedResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "51004");
+        resultMap.put("msg", "UPDATE_PASSWORD_FAILED");
+        resultMap.put("result", result);
+        return resultMap;
+    }
 }

@@ -13,7 +13,6 @@ import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -179,13 +178,13 @@ public class DoctorController extends BaseController {
     public Map updatePassword(String oldPassword, String newPassword) {
 
         if(StringUtils.isBlank(newPassword)||newPassword.length()<6){
-            return updateFailedResponse("新密码格式不正确");
+            return newPasswordFailedResponse("新密码格式不正确");
         }
         if (!this.equalsPassword(oldPassword)) {
-            return updateFailedResponse("旧密码不正确");
+            return oldPasswordFailedResponse("旧密码不正确");
         }
         if (oldPassword.equals(newPassword)) {
-            return updateFailedResponse("新密码与旧密码一样");
+            return oldPasswordEqualsNewPasswordResponse("新密码与旧密码一样");
         }
 
         Doctor doctor = redisSerive.getDoctor();
@@ -199,9 +198,9 @@ public class DoctorController extends BaseController {
         int i = doctorService.updateSelective(doctor);
         if (i > 0) {
             redisSerive.insert(doctor.getId(), jsonUtil.objectToJsonStr(doctor));
-            return updateSuccseeResponse("密码重置成功");
+            return updatePasswordSuccessResponse("密码重置成功");
         }
-        return updateFailedResponse("密码重置失败");
+        return updatePasswordFailedResponse("密码重置失败");
     }
 
 
@@ -215,29 +214,6 @@ public class DoctorController extends BaseController {
         Doctor doctor = redisSerive.getDoctor();
 
         return querySuccessResponse(doctor.getDoctorPhone());
-    }
-
-    /**
-     * @param token
-     * @return
-     * @Author MaxCoder
-     * @Description 用户 退出登陆 接口
-     * @Date: 18:00 2018/4/24
-     */
-    @PostMapping(value = "logout")
-    public Map<String, Object> logout(String token) {
-        resultMap = new LinkedHashMap<>();
-        boolean b = redisSerive.remove(token);
-        if (b) {
-            resultMap.put("code", 20000);
-            resultMap.put("msg", "账号登出成功");
-            resultMap.put("result", null);
-        } else {
-            resultMap.put("code", 20004);
-            resultMap.put("msg", "账号登出失败");
-            resultMap.put("result", null);
-        }
-        return resultMap;
     }
 
 
