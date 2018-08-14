@@ -2,9 +2,13 @@ package com.prostate.doctor.controller;
 
 
 import com.prostate.doctor.cache.redis.RedisSerive;
+import com.prostate.doctor.feignService.RecordServer;
 import com.prostate.doctor.feignService.ThirdServer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -17,6 +21,16 @@ public class BaseController {
 
     @Autowired
     protected ThirdServer thirdServer;
+
+    @Autowired
+    protected RecordServer recordServer;
+
+    public String getToken() {
+
+        HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
+
+        return request.getHeader("token");
+    }
 
     public Map loginSuccessResponse(Object result) {
         resultMap = new LinkedHashMap<>();
@@ -344,7 +358,13 @@ public class BaseController {
 
 
 
-
+    public Map logOutSuccessResponse(Object result) {
+        resultMap = new LinkedHashMap<>();
+        resultMap.put("code", "20000");
+        resultMap.put("msg", "LOGOUT_SUCCESS");
+        resultMap.put("result", result);
+        return resultMap;
+    }
 
 
 }
