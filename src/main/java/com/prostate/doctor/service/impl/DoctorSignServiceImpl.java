@@ -1,5 +1,6 @@
 package com.prostate.doctor.service.impl;
 
+import com.prostate.doctor.bean.DoctorSignBean;
 import com.prostate.doctor.entity.DoctorSign;
 import com.prostate.doctor.mapper.master.DoctorSignWriteMapper;
 import com.prostate.doctor.mapper.slaver.DoctorSignReadMapper;
@@ -44,7 +45,7 @@ public class DoctorSignServiceImpl implements DoctorSignService {
     }
 
     @Override
-    public DoctorSign selectByToken(String id) {
+    public DoctorSignBean selectByToken(String id) {
         return doctorSignReadMapper.selectByToken(id);
     }
 

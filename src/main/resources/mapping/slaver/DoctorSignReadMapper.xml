@@ -36,7 +36,21 @@
         hospital_id,branch_id,title_id,id_card_front, id_card_contrary, doctor_card_front, doctor_card_contrary,
         work_card, approve_status
     </sql>
-    <select id="selectByToken" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <resultMap id="BeanResultMap" type="com.prostate.doctor.bean.DoctorSignBean">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="doctor_id" jdbcType="VARCHAR" property="doctorId"/>
+        <result column="hospital_id" jdbcType="VARCHAR" property="hospitalId"/>
+        <result column="branch_id" jdbcType="VARCHAR" property="branchId"/>
+        <result column="title_id" jdbcType="VARCHAR" property="titleId"/>
+        <result column="id_card_front" jdbcType="VARCHAR" property="idCardFront"/>
+        <result column="id_card_contrary" jdbcType="VARCHAR" property="idCardContrary"/>
+        <result column="doctor_card_front" jdbcType="VARCHAR" property="doctorCardFront"/>
+        <result column="doctor_card_contrary" jdbcType="VARCHAR" property="doctorCardContrary"/>
+        <result column="work_card" jdbcType="VARCHAR" property="workCard"/>
+        <result column="approve_status" jdbcType="VARCHAR" property="approveStatus"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+    <select id="selectByToken" parameterType="java.lang.String" resultMap="BeanResultMap">
         select
         <include refid="Input_Column_List"/>
         from doctor_sign

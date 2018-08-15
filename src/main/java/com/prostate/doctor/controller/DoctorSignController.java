@@ -1,5 +1,6 @@
 package com.prostate.doctor.controller;
 
+import com.prostate.doctor.bean.DoctorSignBean;
 import com.prostate.doctor.common.SignStatus;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorSign;
@@ -61,12 +62,21 @@ public class DoctorSignController extends BaseController {
     public Map get() {
         Doctor doctor = redisSerive.getDoctor();
 
-        DoctorSign doctorSign = doctorSignService.selectByToken(doctor.getId());
+        DoctorSignBean doctorSignBean = doctorSignService.selectByToken(doctor.getId());
 
-        if (doctorSign == null) {
+        if (doctorSignBean == null) {
             return queryEmptyResponse();
         }
-        return querySuccessResponse(doctorSign);
+
+        String hospitalName = staticServer.getHospitalById(doctorSignBean.getHospitalId()).get("result").toString();
+        String branchName = staticServer.getBranchById(doctorSignBean.getBranchId()).get("result").toString();
+        String titleName = staticServer.getTitleById(doctorSignBean.getTitleId()).get("result").toString();
+
+        doctorSignBean.setHospitalName(hospitalName);
+        doctorSignBean.setBranchName(branchName);
+        doctorSignBean.setTitleName(titleName);
+
+        return querySuccessResponse(doctorSignBean);
     }
 
     /**
