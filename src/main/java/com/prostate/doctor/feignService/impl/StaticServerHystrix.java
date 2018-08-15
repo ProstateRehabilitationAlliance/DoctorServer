@@ -67,4 +67,19 @@ public class StaticServerHystrix extends BaseServerHystrix implements StaticServ
     public Map getTitleById(String id) {
         return resultMap;
     }
+
+    @Override
+    public Map<String, Object> hospitalJson() {
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> branchServiceJson() {
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> doctorTitleJson() {
+        return resultMap;
+    }
 }

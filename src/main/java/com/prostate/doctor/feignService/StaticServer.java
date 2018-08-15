@@ -49,4 +49,13 @@ public interface StaticServer {
 
     @GetMapping(value = "/title/getById")
     Map getTitleById(@RequestParam("id") String id);
+
+    @GetMapping(value = "cache/static/getHospitalJson")
+    Map<String,Object> hospitalJson();
+
+    @GetMapping(value = "cache/static/getBranchServiceJson")
+    Map<String,Object> branchServiceJson();
+
+    @GetMapping(value = "cache/static/getDoctorTitleJson")
+    Map<String,Object> doctorTitleJson();
 }
