@@ -80,10 +80,18 @@
         </encoder>
     </appender>
 
-    <!-- 测试环境+开发环境. 多个使用逗号隔开. -->
+    <!-- 开发环境. 多个使用逗号隔开. -->
+    <appender name="SQL_CONSOLE_LOG" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{HH:mm:ss} %boldCyan(%logger{0}) %highlight(%boldGreen(%msg%n))</pattern>
+        </encoder>
+    </appender>
     <springProfile name="dev">
-        <logger name="com.maxcoder.sys.controller" level="INFO" additivity="false">
-            <appender-ref ref="consoleLog"/>
+        <logger name="com.prostate" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_CONSOLE_LOG"/>
+        </logger>
+        <logger name="com.prostate.doctor.mapper" level="DEBUG" additivity="false">
+            <appender-ref ref="SQL_CONSOLE_LOG"/>
         </logger>
     </springProfile>
 
@@ -96,7 +104,7 @@
     </springProfile>
 
     <root level="INFO">
-        <appender-ref ref="consoleLog"/>
+        <!--<appender-ref ref="consoleLog"/>-->
         <!--<appender-ref ref="fileInfoLog"/>-->
         <!--<appender-ref ref="fileErrorLog"/>-->
     </root>

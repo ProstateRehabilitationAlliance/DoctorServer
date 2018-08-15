@@ -22,3 +22,6 @@ hystrix:
   threadpool:
       default:
         coreSize: 10
+logging:
+  level:
+    root: debug

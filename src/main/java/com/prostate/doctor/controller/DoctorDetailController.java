@@ -150,17 +150,17 @@ public class DoctorDetailController extends BaseController {
      * 根据条件查询医生列表信息
      *
      * @param doctorName
-     * @param hositalId
+     * @param hospitalId
      * @return
      */
     @GetMapping(value = "findDoctorList")
-    public Map findDoctorList(String doctorName, String hositalId) {
+    public Map findDoctorList(String doctorName, String hospitalId) {
 
 
         DoctorDetail doctorDetail = new DoctorDetail();
 
         doctorDetail.setDoctorName(doctorName);
-        doctorDetail.setHospitalId(hositalId);
+        doctorDetail.setHospitalId(hospitalId);
 
         int count = doctorDetailService.selectDetailListCountByParams(doctorDetail);
 
