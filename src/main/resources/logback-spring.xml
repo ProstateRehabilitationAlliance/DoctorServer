@@ -86,6 +86,15 @@
             <pattern>%date{HH:mm:ss} %boldCyan(%logger{0}) %highlight(%boldGreen(%msg%n))</pattern>
         </encoder>
     </appender>
+    <!-- 输出到 数据库 -->
+    <appender name="PROJECT-TASK" class="ch.qos.logback.classic.db.DBAppender">
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+                <driverClass>com.mysql.jdbc.Driver</driverClass>
+                <url>jdbc:mysql://bj-cdb-0srt3yo9.sql.tencentcdb.com:63422/dev_master_log?characterEncoding=utf-8</url>
+                <user>root</user>
+                <password>Qlxlm123456</password>
+        </connectionSource>
+    </appender>
     <springProfile name="dev">
         <logger name="com.prostate" level="DEBUG" additivity="false">
             <appender-ref ref="SQL_CONSOLE_LOG"/>
@@ -108,5 +117,7 @@
         <!--<appender-ref ref="fileInfoLog"/>-->
         <!--<appender-ref ref="fileErrorLog"/>-->
     </root>
+
+
 
 </configuration>
