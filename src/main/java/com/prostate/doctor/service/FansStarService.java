@@ -11,4 +11,5 @@ public interface FansStarService extends BaseService<FansStar> {
 
     String getFansCount(String doctorId);
 
+    Map<String,String> starJson(String id);
 }

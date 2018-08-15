@@ -81,36 +81,7 @@ public class FansStarController extends BaseController {
         return deleteFailedResponse("取消关注失败");
     }
 
-    /**
-     * 医生 查询 关注的医生
-     *
-     * @return
-     */
-    @GetMapping(value = "findStar")
-    public Map<String, Object> findStar() {
 
-        Doctor doctor = redisSerive.getDoctor();
-
-        FansStar fansStar = new FansStar();
-
-        fansStar.setFansId(doctor.getId());
-
-        //查询已关注的 医生列表
-        List<FansStar> fansStarList = fansStarService.selectByParams(fansStar);
-        if (fansStarList.isEmpty()) {
-            return queryEmptyResponse();
-        }
-        List<String> stringList = new ArrayList<>();
-        for (FansStar star : fansStarList) {
-            stringList.add(star.getStarId());
-        }
-
-        List<DoctorDetailListBean> doctorDetailListBeans = doctorDetailService.getDoctorDetailByArrayParams(stringList);
-        if (doctorDetailListBeans.isEmpty()) {
-            return queryEmptyResponse();
-        }
-        return querySuccessResponse(doctorDetailListBeans);
-    }
 
 /****************=================微信公众号接口==============*****************/
     /**

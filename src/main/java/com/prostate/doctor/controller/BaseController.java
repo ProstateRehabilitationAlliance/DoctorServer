@@ -3,6 +3,7 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.cache.redis.RedisSerive;
 import com.prostate.doctor.feignService.RecordServer;
+import com.prostate.doctor.feignService.StaticServer;
 import com.prostate.doctor.feignService.ThirdServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -24,6 +25,9 @@ public class BaseController {
 
     @Autowired
     protected RecordServer recordServer;
+
+    @Autowired
+    protected StaticServer staticServer;
 
     public String getToken() {
 

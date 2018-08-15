@@ -1,8 +1,9 @@
 package com.prostate.doctor.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FansStar {
+public class FansStar extends BaseEntity implements Serializable {
     private String id;
 
     private String fansId;

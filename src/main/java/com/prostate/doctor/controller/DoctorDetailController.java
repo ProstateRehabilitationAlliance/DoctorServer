@@ -2,11 +2,12 @@ package com.prostate.doctor.controller;
 
 import com.prostate.doctor.bean.DoctorDetailBean;
 import com.prostate.doctor.bean.DoctorDetailListBean;
+import com.prostate.doctor.bean.DoctorOwnDetailBean;
 import com.prostate.doctor.common.SignStatus;
 import com.prostate.doctor.entity.Doctor;
 import com.prostate.doctor.entity.DoctorDetail;
 import com.prostate.doctor.entity.DoctorSign;
-import com.prostate.doctor.feignService.StaticServer;
+import com.prostate.doctor.entity.FansStar;
 import com.prostate.doctor.param.UpdateDoctorDetailParams;
 import com.prostate.doctor.service.DoctorDetailService;
 import com.prostate.doctor.service.DoctorSignService;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,9 +32,6 @@ public class DoctorDetailController extends BaseController {
 
     @Autowired
     private DoctorDetailService doctorDetailService;
-
-    @Autowired
-    private StaticServer staticServer;
 
     @Autowired
     private FansStarService fansStarService;
@@ -80,19 +79,19 @@ public class DoctorDetailController extends BaseController {
             }
         }
 
-//        DoctorOwnDetailBean doctorOwnDetailBean = new DoctorOwnDetailBean();
-//        doctorOwnDetailBean.setDoctorDetail(doctorDetail);
-//
-//        //
-//        String hospitalName = staticServer.getHospitalById(doctorDetail.getHospitalId()).get("result").toString();
-//        String branchName = staticServer.getBranchById(doctorDetail.getBranchId()).get("result").toString();
-//        String titleName = staticServer.getTitleById(doctorDetail.getTitleId()).get("result").toString();
-//
-//        doctorOwnDetailBean.setHospitalName(hospitalName);
-//        doctorOwnDetailBean.setBranchName(branchName);
-//        doctorOwnDetailBean.setTitleName(titleName);
+        DoctorOwnDetailBean doctorOwnDetailBean = new DoctorOwnDetailBean();
+        doctorOwnDetailBean.setDoctorDetail(doctorDetail);
 
-        return querySuccessResponse(doctorDetail);
+        //
+        String hospitalName = staticServer.getHospitalById(doctorDetail.getHospitalId()).get("result").toString();
+        String branchName = staticServer.getBranchById(doctorDetail.getBranchId()).get("result").toString();
+        String titleName = staticServer.getTitleById(doctorDetail.getTitleId()).get("result").toString();
+
+        doctorOwnDetailBean.setHospitalName(hospitalName);
+        doctorOwnDetailBean.setBranchName(branchName);
+        doctorOwnDetailBean.setTitleName(titleName);
+
+        return querySuccessResponse(doctorOwnDetailBean);
     }
 
     /**
@@ -156,7 +155,6 @@ public class DoctorDetailController extends BaseController {
     @GetMapping(value = "findDoctorList")
     public Map findDoctorList(String doctorName, String hospitalId) {
 
-
         DoctorDetail doctorDetail = new DoctorDetail();
 
         doctorDetail.setDoctorName(doctorName);
@@ -168,12 +166,15 @@ public class DoctorDetailController extends BaseController {
             return queryEmptyResponse();
         }
         List<DoctorDetailListBean> doctorDetailListBeans = doctorDetailService.selectDetailListByParams(doctorDetail);
-        if (doctorDetailListBeans.isEmpty()) {
+
+        if (doctorDetailListBeans == null || doctorDetailListBeans.isEmpty()) {
             return queryEmptyResponse();
         } else {
+            doctorDetailBuilder(doctorDetailListBeans);
             return querySuccessResponse(doctorDetailListBeans, String.valueOf(count));
         }
     }
+
 
     /**
      * 根据ID查询医生信息
@@ -192,31 +193,98 @@ public class DoctorDetailController extends BaseController {
         if (doctorDetail==null){
             return queryEmptyResponse();
         }
-        //查询呗关注数量
-        String fansCount = fansStarService.getFansCount(doctorId);
-        //查询帮助的患者数量
-        String patientCount = "0";
-        //查询访问量
-        String hitsCount = "0";
 
         DoctorDetailBean doctorDetailBean = new DoctorDetailBean();
 
         doctorDetailBean.setDoctorDetail(doctorDetail);
-        doctorDetailBean.setFansCount(fansCount);
-        doctorDetailBean.setPatientCount(patientCount);
-        doctorDetailBean.setHitsCount(hitsCount);
 
-        if (doctorDetailBean == null) {
+        doctorDetailBuilder(doctorDetailBean);
+        new Thread(() -> {
+            recordServer.addDoctorClick(doctorId);
+            Thread.currentThread().interrupt();
+        }).start();
+        return querySuccessResponse(doctorDetailBean);
+    }
+
+    /**
+     * 医生 查询 关注的医生
+     *
+     * @return
+     */
+    @GetMapping(value = "findStar")
+    public Map<String, Object> findStar() {
+
+        Doctor doctor = redisSerive.getDoctor();
+
+        FansStar fansStar = new FansStar();
+
+        fansStar.setFansId(doctor.getId());
+
+        //查询已关注的 医生列表
+        List<FansStar> fansStarList = fansStarService.selectByParams(fansStar);
+        if (fansStarList.isEmpty()) {
+            return queryEmptyResponse();
+        }
+        List<String> stringList = new ArrayList<>();
+        for (FansStar star : fansStarList) {
+            stringList.add(star.getStarId());
+        }
+
+        List<DoctorDetailListBean> doctorDetailListBeans = doctorDetailService.getDoctorDetailByArrayParams(stringList);
+        if (doctorDetailListBeans.isEmpty()) {
             return queryEmptyResponse();
         } else {
-            new Thread(() -> {
-
-                recordServer.addDoctorClick(doctorId);
-                Thread.currentThread().interrupt();
-            }).start();
-            return querySuccessResponse(doctorDetailBean);
+            doctorDetailBuilder(doctorDetailListBeans);
+            return querySuccessResponse(doctorDetailListBeans);
         }
     }
 
+    /**
+     * 医生列表数据处理
+     *
+     * @param doctorDetailListBeans
+     */
+    private void doctorDetailBuilder(List<DoctorDetailListBean> doctorDetailListBeans) {
 
+        Map<String, Object> hospitalMap = staticServer.hospitalJson();
+        Map<String, Object> doctorTitleMap = staticServer.doctorTitleJson();
+        Map<String, String> starJson = fansStarService.starJson(getToken());
+
+        Map<String, String> hospitalJson = (Map<String, String>) hospitalMap.get("result");
+        Map<String, String> doctorTitleJson = (Map<String, String>) doctorTitleMap.get("result");
+
+        for (DoctorDetailListBean doctorDetailListBean : doctorDetailListBeans) {
+
+            doctorDetailListBean.setHospitalName(hospitalJson.get(doctorDetailListBean.getHospitalId()));
+            doctorDetailListBean.setTitleName(doctorTitleJson.get(doctorDetailListBean.getTitleId()));
+            if (starJson != null) {
+                doctorDetailListBean.setAreFans(starJson.get(doctorDetailListBean.getId()) != null);
+            }
+        }
+    }
+
+    /**
+     * 医生数据处理
+     */
+    private void doctorDetailBuilder(DoctorDetailBean doctorDetailBean) {
+        log.info(doctorDetailBean.toString());
+        String hospitalName = staticServer.getHospitalById(doctorDetailBean.getHospitalId()).get("result").toString();
+        String branchName = staticServer.getBranchById(doctorDetailBean.getBranchId()).get("result").toString();
+        String titleName = staticServer.getTitleById(doctorDetailBean.getTitleId()).get("result").toString();
+
+        doctorDetailBean.setHospitalName(hospitalName);
+        doctorDetailBean.setBranchName(branchName);
+        doctorDetailBean.setTitleName(titleName);
+
+        doctorDetailBean.setAreFans(true);
+
+        doctorDetailBean.setFansCount(0);
+        doctorDetailBean.setHitsCount(0);
+        doctorDetailBean.setPatientCount(0);
+
+        doctorDetailBean.setPicturePrice(0);
+        doctorDetailBean.setPhonePrice(0);
+        doctorDetailBean.setVideoPrice(0);
+
+    }
 }
